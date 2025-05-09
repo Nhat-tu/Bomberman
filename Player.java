@@ -1,3 +1,6 @@
+import java.util.ArrayList;
+import java.util.List;
+
 public class Player {
     Position position;
     private int movementSpeed;
@@ -5,6 +8,7 @@ public class Player {
     private int explosionRadius;
     private int numberOfLives;
     private int invulnerabilityTimer;
+    private List<PowerUp> currentPowerups;
 
     public Player() {
         position = new Position();
@@ -13,6 +17,7 @@ public class Player {
         explosionRadius = 1;
         numberOfLives = 3;
         invulnerabilityTimer = 3;
+        currentPowerups = new ArrayList<PowerUp>();
     }
 
     public void move() {
@@ -24,6 +29,10 @@ public class Player {
     }
 
     public void takeDamage(int damage) {
+        /* TODO */
+    }
+
+    public void gameOver() {
         /* TODO */
     }
 
