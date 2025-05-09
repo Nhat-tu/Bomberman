@@ -1,7 +1,7 @@
 import java.util.ArrayList;
 import java.util.List;
 
-public class Player {
+public class Player extends GameEntity{
     Position position;
     private int movementSpeed;
     private int bombs;
@@ -20,19 +20,22 @@ public class Player {
         currentPowerups = new ArrayList<PowerUp>();
     }
 
-    public void move() {
+    @Override
+    public void movement() {
+        /* TODO */
+    }
+
+    @Override
+    public void takeDamage() {
+        /* TODO */
+    }
+
+    @Override
+    public void die() {
         /* TODO */
     }
 
     public void placeBombs() {
-        /* TODO */
-    }
-
-    public void takeDamage(int damage) {
-        /* TODO */
-    }
-
-    public void gameOver() {
         /* TODO */
     }
 
