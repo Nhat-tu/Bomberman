@@ -1,2 +1,4 @@
 .idea/
-Bomberman.iml
+.gradle/caches/
+*.iml
+*.jar
