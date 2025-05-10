@@ -1,3 +1,5 @@
+package com.uet.oop.object;
+
 public class DestructibleBlock {
     private Position position;
     private PowerUp potentialPowerUp;

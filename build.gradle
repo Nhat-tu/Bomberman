@@ -1,18 +1,33 @@
 plugins {
-    id 'java'
+    id "java"
+    id "application"
 }
 
-group = 'com.nhat-tu'
-version = '1.0-SNAPSHOT'
+group = "com.nhat-tu"
+version = "1.0"
 
 repositories {
     mavenCentral()
 }
 
-dependencies {
-
+application {
+    mainClass = "Main"
 }
 
-test {
+java {
+    sourceSets {
+        main {
+            java {
+                srcDirs = ["src"]
+            }
+        }
+    }
+}
 
+jar {
+    manifest {
+        attributes(
+                "Main-Class": application.mainClass
+        )
+    }
 }

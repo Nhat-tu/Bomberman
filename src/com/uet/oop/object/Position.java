@@ -1,3 +1,8 @@
+package com.uet.oop.object;
+
+
+import java.util.Objects;
+
 public class Position {
     private int x;
     private int y;
@@ -34,6 +39,11 @@ public class Position {
             return x == p.getX() && y == p.getY();
         }
         return false;
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(x, y);
     }
 
     @Override

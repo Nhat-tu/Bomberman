@@ -1,3 +1,6 @@
+package com.uet.oop.object;
+
+
 public abstract class PowerUp {
     private Position position;
     public enum PowerUpType {
