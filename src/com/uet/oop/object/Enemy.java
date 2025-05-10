@@ -1,11 +1,9 @@
 package com.uet.oop.object;
 
 
-import java.util.Random;
-
 public class Enemy extends GameEntity {
-    public Enemy() {
-
+    Enemy(Position position, double speed, int hitPoints) {
+        super(position, speed, hitPoints);
     }
 
     /**
@@ -33,7 +31,7 @@ public class Enemy extends GameEntity {
      */
     @Override
     public void takeDamage() {
-        HP -= 1;
+        hitPoints -= 1;
     }
 
     /**
