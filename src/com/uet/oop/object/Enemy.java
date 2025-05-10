@@ -1,9 +1,11 @@
+package com.uet.oop.object;
+
+
 import java.util.Random;
 
 public class Enemy extends GameEntity {
+    public Enemy() {
 
-    Enemy(Position position, double speed, int HP) {
-        super(position, speed, HP);
     }
 
     /**
@@ -15,8 +17,8 @@ public class Enemy extends GameEntity {
         final int[] dy = {0, 0, -1, 1};
 
         for (int i = 0; i < 4; i++) {
-            int newX = this.position.x + dx[i] /* * Map.tileSize */; // Map class with static attributes: tileSize, width, height
-            int newY = this.position.y + dy[i] /* * Map.tileSize */;
+            int newX = this.position.getX() + dx[i] /* * Map.tileSize */; // Map class with static attributes: tileSize, width, height
+            int newY = this.position.getY() + dy[i] /* * Map.tileSize */;
             Position newPos = new Position(newX, newY);
 
             if (newX >= 0 && newY >= 0 /* && newX < Map.width && newY < Map. */) {
