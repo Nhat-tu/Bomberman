@@ -31,7 +31,7 @@ public class Enemy extends GameEntity {
      */
     @Override
     public void takeDamage() {
-        HP -= 1;
+        this.HP -= 1;
     }
 
     /**
