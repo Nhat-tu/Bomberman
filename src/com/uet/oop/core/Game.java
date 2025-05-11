@@ -9,7 +9,6 @@ public enum Game {
     JFrame window;
     Game() {
         window = new JFrame();
-        // window.setSize(800, 600);
         window.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         window.setResizable(false);
 
