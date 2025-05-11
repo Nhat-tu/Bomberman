@@ -9,18 +9,21 @@ public enum Game {
     JFrame window;
     Game() {
         window = new JFrame();
-        window.setSize(800, 600);
         window.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         window.setResizable(false);
+
+        GameWindow gameWindow = new GameWindow();
+        window.add(gameWindow); // add GameWindow to window's contentPane, display purpose.
+
+        window.pack(); // resize this fking window to fit the size and layout of its contents (in this case, JPanel GameWindow)
+        window.setLocationRelativeTo(null);
+        window.setTitle("Bomberman v0.1");
         window.setVisible(true);
+
+        gameWindow.requestFocusInWindow(); // fcking crucial to receive keyboard input.
+
         System.out.println("Game initialized");
-    }
 
-    public void update() {
-
-    }
-
-    public void render() {
-
+        gameWindow.startGameThread();
     }
 }
