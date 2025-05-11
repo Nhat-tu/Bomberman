@@ -17,7 +17,7 @@ public class GameWindow extends JPanel implements Runnable {
     // FPS
     final int FPS = 30;
 
-    // multiple threads: for later or never
+    // multiple threads: never
     Thread gameThread;
     // key handler
     KeyboardHandler keyHandler = new KeyboardHandler();
