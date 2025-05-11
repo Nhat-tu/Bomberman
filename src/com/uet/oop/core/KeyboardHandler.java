@@ -13,7 +13,6 @@ public class KeyboardHandler implements KeyListener {
     public boolean isKeyPressed(int keyCode) {
         return pressedKeys.contains(keyCode);
     } // refer to GameWindow
-    /* public boolean wPressed, sPressed , aPressed, dPressed; */
 
     /**
      * Invoked when a key has been pressed.
@@ -25,24 +24,7 @@ public class KeyboardHandler implements KeyListener {
     @Override
     public void keyPressed(KeyEvent e) {
         int keyCode = e.getKeyCode();
-        /* switch (keyCode) {
-            case KeyEvent.VK_W:
-                wPressed = true;
-                break;
-            case KeyEvent.VK_S:
-                sPressed = true;
-                break;
-            case KeyEvent.VK_A:
-                aPressed = true;
-                break;
-            case KeyEvent.VK_D:
-                dPressed = true;
-                break;
-            default:
-                break;
-        } */
         pressedKeys.add(keyCode);
-        System.out.println("Key pressed: " + keyCode);
     }
 
     /**
@@ -55,22 +37,6 @@ public class KeyboardHandler implements KeyListener {
     @Override
     public void keyReleased(KeyEvent e) {
         int keyCode = e.getKeyCode();
-        /* switch (keyCode) {
-            case KeyEvent.VK_W:
-                wPressed = false;
-                break;
-            case KeyEvent.VK_S:
-                sPressed = false;
-                break;
-            case KeyEvent.VK_A:
-                aPressed = false;
-                break;
-            case KeyEvent.VK_D:
-                dPressed = false;
-                break;
-            default:
-                break;
-        } */
         pressedKeys.remove(keyCode);
     }
 

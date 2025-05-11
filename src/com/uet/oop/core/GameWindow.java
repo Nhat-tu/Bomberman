@@ -17,7 +17,7 @@ public class GameWindow extends JPanel implements Runnable {
     // FPS
     final int FPS = 30;
 
-    // multiple threads: for later or never
+    // multiple threads: never
     Thread gameThread;
     // key handler
     KeyboardHandler keyHandler = new KeyboardHandler();
@@ -66,14 +66,11 @@ public class GameWindow extends JPanel implements Runnable {
     public void update() {
         if (keyHandler.isKeyPressed(KeyEvent.VK_W)) {
             rectY -= rectSpd;
-        }
-        if (keyHandler.isKeyPressed(KeyEvent.VK_S)) {
+        } else if (keyHandler.isKeyPressed(KeyEvent.VK_S)) {
             rectY += rectSpd;
-        }
-        if (keyHandler.isKeyPressed(KeyEvent.VK_A)) {
+        } else if (keyHandler.isKeyPressed(KeyEvent.VK_A)) {
             rectX -= rectSpd;
-        }
-        if (keyHandler.isKeyPressed(KeyEvent.VK_D)) {
+        } else if (keyHandler.isKeyPressed(KeyEvent.VK_D)) {
             rectX += rectSpd;
         }
     }
