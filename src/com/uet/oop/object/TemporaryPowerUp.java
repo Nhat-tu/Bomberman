@@ -1,3 +1,6 @@
+package com.uet.oop.object;
+
+
 public abstract class TemporaryPowerUp extends PowerUp {
     private int duration;
 

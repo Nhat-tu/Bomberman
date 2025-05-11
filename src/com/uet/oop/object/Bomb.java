@@ -1,3 +1,5 @@
+package com.uet.oop.object;
+
 public class Bomb {
     private Position position;
     private int fuseTime;
