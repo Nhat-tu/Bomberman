@@ -16,4 +16,16 @@ public abstract class GameEntity {
         this.movementSpeed = movementSpeed;
         this.hitPoints = hitPoints;
     }
+
+    public double getMovementSpeed() {
+        return movementSpeed;
+    }
+
+    public Position getPosition() {
+        return position;
+    }
+
+    public int getHitPoints() {
+        return hitPoints;
+    }
 }
