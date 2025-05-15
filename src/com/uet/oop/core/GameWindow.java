@@ -1,14 +1,21 @@
 package com.uet.oop.core;
 
-import java.awt.*;
-import java.awt.event.KeyEvent;
-import javax.swing.JPanel;
+import com.uet.oop.object.Player;
+import com.uet.oop.object.Position;
+import com.uet.oop.rendering.RenderManager;
+import com.uet.oop.rendering.TextureManager;
+
+import java.awt.Color;
+import java.awt.Dimension;
+import java.awt.Graphics;
+import java.awt.Graphics2D;
+import javax.swing.*;
 
 public class GameWindow extends JPanel implements Runnable {
     // Some components
     final int originalTileSize = 16;
     final int scale = 3;
-    final int tileSize = originalTileSize * scale;
+    public final int tileSize = originalTileSize * scale;
 
     final int mapCol = 16; // Grid-base mapping
     final int mapRow = 12;
@@ -17,26 +24,40 @@ public class GameWindow extends JPanel implements Runnable {
     // FPS
     final int FPS = 30;
 
-    // multiple threads: never
-    Thread gameThread;
-    // key handler
-    KeyboardHandler keyHandler = new KeyboardHandler();
-    // test purpose
-    int rectX = screenWidth / 2 - tileSize / 2;
-    int rectY = screenHeight / 2 - tileSize / 2;
-    int rectSpd = 10;
+    KeyboardHandler keyHandler;
+    RenderManager renderManager;
+    TextureManager textureManager;
+    Player player;
+
+/*    --- Load game resources --- */
+    public void initGame() {
+        keyHandler = new KeyboardHandler();
+        renderManager = new RenderManager();
+        textureManager = new TextureManager();
+        this.addKeyListener(keyHandler);
+
+        player = new Player(new Position(), 7, 3, this, keyHandler, this.textureManager);
+
+        textureManager.loadTexture("player_spritesheet", "/player/bomberman_sprite.png");
+        player.setupAnimation();
+
+        renderManager.addRenderable(player);
+
+        System.out.println("Game initialized");
+    }
 
     /**
      * constructor.
      */
     public GameWindow() {
         this.setPreferredSize(new Dimension(screenWidth, screenHeight));
-        this.setBackground(Color.GREEN);
+        this.setBackground(Color.DARK_GRAY);
         this.setDoubleBuffered(true); // idk how but this improves rendering performance.
-        this.addKeyListener(keyHandler);
         this.setFocusable(true);
-
+        initGame();
     }
+
+    Thread gameThread;
 
     public void startGameThread() {
         gameThread = new Thread(this); // instantiate gameThread
@@ -64,24 +85,20 @@ public class GameWindow extends JPanel implements Runnable {
     }
 
     public void update() {
-        if (keyHandler.isKeyPressed(KeyEvent.VK_W)) {
-            rectY -= rectSpd;
-        } else if (keyHandler.isKeyPressed(KeyEvent.VK_S)) {
-            rectY += rectSpd;
-        } else if (keyHandler.isKeyPressed(KeyEvent.VK_A)) {
-            rectX -= rectSpd;
-        } else if (keyHandler.isKeyPressed(KeyEvent.VK_D)) {
-            rectX += rectSpd;
-        }
+        player.update();
     }
 
     @Override
     public void paintComponent(Graphics g) {
         super.paintComponent(g);
-        // Gain more 2D-centered control over graphic
-        Graphics2D g2d = (Graphics2D) g; //Tab Tab
-        g2d.setColor(Color.MAGENTA);
-        g2d.fillRect(rectX, rectY, tileSize, tileSize);
-        g2d.dispose();
+        // convert to 2D graphic
+        Graphics2D g2d = (Graphics2D) g;
+
+        //add more here
+        renderManager.setGraphicContext2d(g2d);
+        renderManager.render();
+
+        // renderManager.clearRenderables();
+        // g2d.dispose();
     }
 }

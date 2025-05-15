@@ -22,8 +22,6 @@ public enum Game {
 
         gameWindow.requestFocusInWindow(); // fcking crucial to receive keyboard input.
 
-        System.out.println("Game initialized");
-
         gameWindow.startGameThread();
     }
 }

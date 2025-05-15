@@ -2,15 +2,29 @@ package com.uet.oop.object;
 
 
 public class Enemy extends GameEntity {
-    Enemy(Position position, double speed, int hitPoints) {
+    Enemy(Position position, int speed, int hitPoints) {
         super(position, speed, hitPoints);
+    }
+
+    @Override
+    public void setupAnimation() {
+        /* TODO */
+    }
+
+    @Override
+    public void setAnimation(String animationName) {
+        /* TODO */
+    }
+
+    public void loadTexture() {
+        /* TODO */
     }
 
     /**
      *
      */
     @Override
-    public void movement() {
+    public void movement() { // ???? should be rebuilt
         final int[] dx = {-1, 1, 0, 0};
         final int[] dy = {0, 0, -1, 1};
 
