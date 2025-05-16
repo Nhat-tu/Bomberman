@@ -44,65 +44,50 @@ public class Player extends GameEntity implements Renderable {
     }
 
     public void setupAnimation() {
-//        String sheetName = "classic.png"; // crucial
-        int frameWidth = 16;
-        int frameHeight = 16;
-        int framesPerAnimation = 3;
+        int framesPerAnimation = 4;
 
-//         BufferedImage sheet = textureManager.getTexture(sheetName);
-//         if (sheet == null) {
-//             System.err.println("Couldn't load player sheet: " + sheetName);
-//         }
-// ------------------------------------ hard code
-        // cut player spritesheet - move left
+// ------------------------------------
+        // move left anim
         BufferedImage[] moveLeftFrames = new BufferedImage[framesPerAnimation];
-//        int moveLeftRow = 0;
-//        int moveLeftCol = 0;
-//        for (int i = moveLeftCol; i < framesPerAnimation + moveLeftCol; i++) {
-//            moveLeftFrames[i] = textureManager.getSubImage(sheetName, i * frameWidth, moveLeftRow * frameHeight, frameWidth, frameHeight);
-//        }
+
         moveLeftFrames[0] = textureManager.getTexture("player_left_1.png");
         moveLeftFrames[1] = textureManager.getTexture("player_left.png");
         moveLeftFrames[2] = textureManager.getTexture("player_left_2.png");
+        moveLeftFrames[3] = textureManager.getTexture("player_left.png");
+
         Animation moveLeftAnimation = new Animation(moveLeftFrames, 200, true);
         animations.put("moveLeftAnimation", moveLeftAnimation);
 
-        // cut player spritesheet - move right
+        // move right anim
         BufferedImage[] moveRightFrames = new BufferedImage[framesPerAnimation];
-//        int moveRightRow = 1;
-//        int moveRightCol = 0;
-//        for (int i = moveRightCol; i < framesPerAnimation + moveRightCol; i++) {
-//            moveRightFrames[i] = textureManager.getSubImage(sheetName, i * frameWidth, moveRightRow * frameHeight, frameWidth, frameHeight);
-//        }
+
         moveRightFrames[0] = textureManager.getTexture("player_right_1.png");
         moveRightFrames[1] = textureManager.getTexture("player_right.png");
         moveRightFrames[2] = textureManager.getTexture("player_right_2.png");
+        moveRightFrames[3] = textureManager.getTexture("player_right.png");
+
         Animation moveRightAnimation = new Animation(moveRightFrames, 200, true);
         animations.put("moveRightAnimation", moveRightAnimation);
 
-        // cut player spritesheet - move up
+        // move up anim
         BufferedImage[] moveUpFrames = new BufferedImage[framesPerAnimation];
-//        int moveUpRow = 1;
-//        int moveUpCol = 3;
-//        for (int i = moveUpCol; i < framesPerAnimation + moveUpCol; i++) {
-//            moveUpFrames[i - moveUpCol] = textureManager.getSubImage(sheetName, i * frameWidth, moveUpRow * frameHeight, frameWidth, frameHeight);
-//        }
+
         moveUpFrames[0] = textureManager.getTexture("player_up_1.png");
         moveUpFrames[1] = textureManager.getTexture("player_up.png");
         moveUpFrames[2] = textureManager.getTexture("player_up_2.png");
+        moveUpFrames[3] = textureManager.getTexture("player_up.png");
+
         Animation moveUpAnimation = new Animation(moveUpFrames, 200, true);
         animations.put("moveUpAnimation", moveUpAnimation);
 
-        // cut player spritesheet - move down
+        // move down anim
         BufferedImage[] moveDownFrames = new BufferedImage[framesPerAnimation];
-//        int moveDownRow = 0;
-//        int moveDownCol = 3;
-//        for (int i = moveDownCol; i < framesPerAnimation + moveDownCol; i++) {
-//            moveDownFrames[i - moveDownCol] = textureManager.getSubImage(sheetName, i * frameWidth, moveDownRow * frameHeight, frameWidth, frameHeight);
-//        }
+
         moveDownFrames[0] = textureManager.getTexture("player_down_1.png");
         moveDownFrames[1] = textureManager.getTexture("player_down.png");
         moveDownFrames[2] = textureManager.getTexture("player_down_2.png");
+        moveDownFrames[3] = textureManager.getTexture("player_down.png");
+
         Animation moveDownAnimation = new Animation(moveDownFrames, 200, true);
         animations.put("moveDownAnimation", moveDownAnimation);
 //-------------------------------------

@@ -5,11 +5,11 @@ import com.uet.oop.rendering.TextureManager;
 
 import java.util.HashMap;
 
-public class Enemy extends GameEntity {
+public abstract class Enemy extends GameEntity {
     GameWindow gw;
     TextureManager textureManager;
 
-    Enemy(GameWindow gw, TextureManager textureManager) {
+    public Enemy(GameWindow gw, TextureManager textureManager) {
         setDefaultValues();
         this.gw = gw;
         this.textureManager = textureManager;
@@ -21,20 +21,6 @@ public class Enemy extends GameEntity {
         this.hitPoints = 1;
         this.movementSpeed = 6;
         this.currentAnimation = null;
-    }
-
-    @Override
-    public void setupAnimation() {
-        /* TODO */
-    }
-
-    @Override
-    public void setAnimation(String animationName) {
-        /* TODO */
-    }
-
-    public void loadTexture() {
-        /* TODO */
     }
 
     /**

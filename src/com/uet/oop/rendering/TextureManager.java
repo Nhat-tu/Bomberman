@@ -27,7 +27,7 @@ public class TextureManager {
             BufferedImage texture = ImageIO.read(getClass().getResourceAsStream(texturePath));
             if (texture != null) {
                 textureMap.put(name, texture);
-                System.out.printf("Texture: %s loaded successfully from %s%n", name, texturePath);
+                System.out.printf("Texture: %s loaded %s from %s%n","\u001B[40m" + name + "\u001B[0m", "\u001B[32m" + "successfully" + "\u001B[0m" , texturePath);
                 return texture;
             } else {
                 System.out.println("Could not read texture: " + name);

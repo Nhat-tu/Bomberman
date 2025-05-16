@@ -55,9 +55,10 @@
 /sprites/minvo_right1.png
 /sprites/minvo_right2.png
 /sprites/minvo_right3.png
-/sprites/mob_dead1.png
-/sprites/mob_dead2.png
-/sprites/mob_dead3.png
+/sprites/mob_dead_1.png
+/sprites/mob_dead_2.png
+/sprites/mob_dead_3.png
+/sprites/mob_dead_4.png
 /sprites/oneal_dead.png
 /sprites/oneal_left1.png
 /sprites/oneal_left2.png

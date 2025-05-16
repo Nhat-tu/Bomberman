@@ -1,7 +1,6 @@
 package com.uet.oop.object;
 
 import com.uet.oop.rendering.Animation;
-import java.awt.image.BufferedImage;
 import java.util.Map;
 
 public abstract class GameEntity {
@@ -15,12 +14,6 @@ public abstract class GameEntity {
     public abstract void movement();
     public abstract void takeDamage();
     public abstract void die();
-
-//    public GameEntity(Position position, int movementSpeed, int hitPoints) {
-//        this.position = position;
-//        this.movementSpeed = movementSpeed;
-//        this.hitPoints = hitPoints;
-//    }
 
     public abstract void setupAnimation();
     public abstract void setAnimation(String animationName);
