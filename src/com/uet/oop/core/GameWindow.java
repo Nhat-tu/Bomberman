@@ -1,7 +1,6 @@
 package com.uet.oop.core;
 
 import com.uet.oop.object.Player;
-import com.uet.oop.object.Position;
 import com.uet.oop.rendering.RenderManager;
 import com.uet.oop.rendering.TextureManager;
 
@@ -36,14 +35,12 @@ public class GameWindow extends JPanel implements Runnable {
         textureManager = new TextureManager();
         this.addKeyListener(keyHandler);
 
-        player = new Player(new Position(), 7, 3, this, keyHandler, this.textureManager);
-
-        textureManager.loadTexture("player_spritesheet", "/player/bomberman_sprite.png");
+        // can add more
+        player = new Player(this, keyHandler, this.textureManager);
+        textureManager.bulkLoadTexture();
         player.setupAnimation();
-
+        // can add more
         renderManager.addRenderable(player);
-
-        System.out.println("Game initialized");
     }
 
     /**
@@ -51,7 +48,7 @@ public class GameWindow extends JPanel implements Runnable {
      */
     public GameWindow() {
         this.setPreferredSize(new Dimension(screenWidth, screenHeight));
-        this.setBackground(Color.DARK_GRAY);
+        this.setBackground(new Color(80, 160, 0));
         this.setDoubleBuffered(true); // idk how but this improves rendering performance.
         this.setFocusable(true);
         initGame();

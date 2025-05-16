@@ -12,6 +12,7 @@ public enum Game {
         window.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         window.setResizable(false);
 
+        System.out.println("Game initialized");
         GameWindow gameWindow = new GameWindow();
         window.add(gameWindow); // add GameWindow to window's contentPane, display purpose.
 

@@ -1,15 +1,18 @@
 package com.uet.oop.rendering;
 
-import javax.imageio.ImageIO;
 import java.awt.image.BufferedImage;
-
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.io.IOException;
+import javax.imageio.ImageIO;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.HashMap;
 import java.util.Map;
 
 // no more <object>.loadTexture.
 public class TextureManager {
-    private Map<String, BufferedImage> textureMap; // e.g. "player_idle_1", (frame 1 of) player idle
+    private Map<String, BufferedImage> textureMap;
 
     public TextureManager() {
         this.textureMap = new HashMap<>();
@@ -33,6 +36,39 @@ public class TextureManager {
         } catch (IOException e) {
             System.err.println("Error loading texture: " + name);
             return null;
+        }
+    }
+
+    public void bulkLoadTexture() {
+        List<String> filePaths;
+        filePaths = TextureFileReader.readFromFile("texturePaths.txt"); // this already ignores blank lines.
+
+        List<String> fileNames = new ArrayList<>();
+        for (String pathString : filePaths) {
+            if (pathString != null) {
+                try {
+                    Path path = Paths.get(pathString);
+                    Path fileNamePath = path.getFileName();
+                    if (fileNamePath != null) {
+                        fileNames.add(fileNamePath.toString());
+                    } else {
+                        // Handles root directories or paths ending with separator
+                        // getFileName() returns null for root (e.g., "/")
+                        // For "/path/to/directory/", it returns "directory"
+                        fileNames.add("it's root"); // handle
+                    }
+                } catch (Exception e) {
+                    // Handle potential invalid path strings if necessary
+                    System.err.println("Error processing path: " + pathString + " - " + e.getMessage());
+                    fileNames.add("failed"); // error marker
+                }
+            } else {
+                fileNames.add("null!"); // Handle null paths
+            }
+        }
+
+        for (int i = 0; i < fileNames.size(); i++) {
+            loadTexture(fileNames.get(i), filePaths.get(i));
         }
     }
 
