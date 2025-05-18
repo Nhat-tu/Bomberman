@@ -1,5 +1,6 @@
 package com.uet.oop.core;
 
+import com.uet.oop.map.TileManager;
 import com.uet.oop.object.Player;
 import com.uet.oop.rendering.RenderManager;
 import com.uet.oop.rendering.TextureManager;
@@ -16,29 +17,39 @@ public class GameWindow extends JPanel implements Runnable {
     final int scale = 3;
     public final int tileSize = originalTileSize * scale;
 
-    final int mapCol = 16; // Grid-base mapping
-    final int mapRow = 12;
-    final int screenWidth = mapCol * tileSize;
-    final int screenHeight = mapRow * tileSize;
+    // SCREEN SETTINGS
+    public final int screenCol = 15;
+    public final int screenRow = 13;
+    public final int screenWidth = screenCol * tileSize;
+    public final int screenHeight = screenRow * tileSize;
     // FPS
     final int FPS = 30;
+
+    // MAP SETTINGS
+    public final int mapCol = 31; // Grid-base mapping
+    public final int mapRow = 13;
+    public final int mapWidth = mapCol * tileSize;
+    public final int mapHeight = mapRow * tileSize;
 
     KeyboardHandler keyHandler;
     RenderManager renderManager;
     TextureManager textureManager;
-    Player player;
+    TileManager tileManager;
+    public Player player;
 
 /*    --- Load game resources --- */
     public void initGame() {
         keyHandler = new KeyboardHandler();
         renderManager = new RenderManager();
         textureManager = new TextureManager();
+
         this.addKeyListener(keyHandler);
 
         // can add more
-        player = new Player(this, keyHandler, this.textureManager);
         textureManager.bulkLoadTexture();
-        player.setupAnimation();
+        player = new Player(this, keyHandler, this.textureManager); // migrate setUpAnimation to constructor
+        tileManager = new TileManager(this, textureManager);
+
         // can add more
         renderManager.addRenderable(player);
     }
@@ -90,7 +101,8 @@ public class GameWindow extends JPanel implements Runnable {
         super.paintComponent(g);
         // convert to 2D graphic
         Graphics2D g2d = (Graphics2D) g;
-
+        // render map first
+        tileManager.draw(g2d);
         //add more here
         renderManager.setGraphicContext2d(g2d);
         renderManager.render();
