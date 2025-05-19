@@ -16,6 +16,7 @@ public class DestructibleTile extends Tile {
     public DestructibleTile(PowerUp potentialPowerUp, GameWindow gw, TextureManager textureManager) {
         this.tileType = TileType.DESTRUCTIBLE;
         this.potentialPowerUp = potentialPowerUp;
+        this.collideWithEntity = true;
         this.gw = gw;
         this.textureManager = textureManager;
 
@@ -27,6 +28,11 @@ public class DestructibleTile extends Tile {
     }
 
     public void destroyed() {
+        isDestroyed = true;
+        if (potentialPowerUp.getType() == PowerUp.PowerUpType.NULL) {
+            collideWithEntity = false;
+        }
+
         /* TODO */
     }
 

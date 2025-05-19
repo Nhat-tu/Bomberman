@@ -1,8 +1,7 @@
 package com.uet.oop.map;
 
 import com.uet.oop.core.GameWindow;
-import com.uet.oop.object.powerups.PermanentPowerUp;
-import com.uet.oop.object.powerups.PowerUp;
+import com.uet.oop.object.powerups.*;
 import com.uet.oop.rendering.TextureManager;
 import com.uet.oop.object.Position;
 
@@ -37,11 +36,11 @@ public class TileManager {
     public void getTiles() {
         tiles.put(' ', new GrassTile(gw, textureManager));
         tiles.put('#', new IndestructibleTile(gw, textureManager));
-        tiles.put('*', new DestructibleTile(new PermanentPowerUp(PowerUp.PowerUpType.NULL), gw, textureManager));
+        tiles.put('*', new DestructibleTile(new NoPowerUp(PowerUp.PowerUpType.NULL), gw, textureManager));
         tiles.put('x', new IndestructibleTile(gw, textureManager));
-        tiles.put('b', new DestructibleTile(new PermanentPowerUp(PowerUp.PowerUpType.BOMB_UP), gw, textureManager));
-        tiles.put('f', new DestructibleTile(new PermanentPowerUp(PowerUp.PowerUpType.FIRE_UP), gw, textureManager));
-        tiles.put('s', new DestructibleTile(new PermanentPowerUp(PowerUp.PowerUpType.SPEED_UP), gw, textureManager));
+        tiles.put('b', new DestructibleTile(new BombUpPowerUp(PowerUp.PowerUpType.BOMB_UP), gw, textureManager));
+        tiles.put('f', new DestructibleTile(new FireUpPowerUp(PowerUp.PowerUpType.FIRE_UP), gw, textureManager));
+        tiles.put('s', new DestructibleTile(new SpeedPowerUp(PowerUp.PowerUpType.SPEED_UP), gw, textureManager));
     }
 
     public void loadMap() {
