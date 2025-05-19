@@ -89,8 +89,8 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ secrets.DEPLOYMENT_TOKEN }}
         with:
-          tag_name: ${{ github.sha }} # Use the commit SHA as the tag
-          release_name: Commit ${{ github.sha }}
+          tag_name: v1.0.${{ github.run_number }} # Use the commit SHA as the tag
+          release_name: Bomberman-${{ github.run_number }}
           body: |
             JAR files built from commit ${{ github.sha }}.
             - Linux: ${{ steps.linux_jar_info.outputs.asset_name }}
