@@ -32,7 +32,7 @@ jobs:
         if: ${{ runner.os == 'Linux' }}
         id: find_jar_linux
         run: |
-          $JAR_FILE = Get-Content -Path jar_path.txt
+          JAR_FILE=$(find build/libs/ -name "*.jar" -not -name "*-sources.jar" -not -name "*-javadoc.jar")
           echo "JAR_FILE=$JAR_FILE" >> "$GITHUB_OUTPUT"
 
       - name: Find JAR file (Windows)
