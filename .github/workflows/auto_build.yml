@@ -39,15 +39,20 @@ jobs:
         if: ${{ runner.os == 'Windows' }}
         id: find_jar_windows
         run: |
-          Get-ChildItem -Path "build\libs\*.jar" -Exclude "*-sources.jar", "*-javadoc.jar" | Select-Object -First 1 -ExpandProperty FullName | Out-File -Encoding UTF8 -FilePath jar_path.txt
-          $JAR_FILE = Get-Content -Path jar_path.txt
-          echo "JAR_FILE=$JAR_FILE" >> "$GITHUB_OUTPUT"
+          $jarFiles = Get-ChildItem -Path "build\libs\*.jar" -Exclude "*-sources.jar", "*-javadoc.jar"
+          if ($jarFiles) {
+            $latestJar = $jarFiles | Sort-Object LastWriteTime -Descending | Select-Object -First 1
+            echo "JAR_FILE=$($latestJar.FullName)" | Out-File -Encoding UTF8 -Append -FilePath $env:GITHUB_OUTPUT
+          } else {
+            echo "JAR_FILE=" | Out-File -Encoding UTF8 -Append -FilePath $env:GITHUB_OUTPUT
+          }
 
       - name: Upload JAR as artifact
         uses: actions/upload-artifact@v4
         with:
           name: ${{ matrix.os }}-app
           path: ${{ steps.find_jar_linux.outputs.JAR_FILE || steps.find_jar_windows.outputs.JAR_FILE }}
+        if: ${{ steps.find_jar_linux.outputs.JAR_FILE != '' || steps.find_jar_windows.outputs.JAR_FILE != '' }}
 
   release:
     needs: build
