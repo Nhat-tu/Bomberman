@@ -53,11 +53,11 @@ public class DestructibleTile extends Tile {
         explodedBrick[4] = textureManager.getTexture("brick_exploded_4.png");
         explodedBrick[5] = textureManager.getTexture("brick_exploded_5.png");
         switch (potentialPowerUp.getType()) {
-            case PowerUp.PowerUpType.BOMB_UP ->
+            case BOMB_UP ->
                 explodedBrick[6] = textureManager.getTexture("powerup_bombs.png");
-            case PowerUp.PowerUpType.FIRE_UP ->
+            case FIRE_UP ->
                 explodedBrick[6] = textureManager.getTexture("powerup_flames.png");
-            case PowerUp.PowerUpType.SPEED_UP ->
+            case SPEED_UP ->
                 explodedBrick[6] = textureManager.getTexture("powerup_speed.png");
         }
         Animation explodedBrickAnimation = new Animation(explodedBrick, 100, false);
