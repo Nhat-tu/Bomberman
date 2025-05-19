@@ -1,10 +1,9 @@
-package com.uet.oop.object;
+package com.uet.oop.object.powerups;
 
+import com.uet.oop.object.Player;
+import com.uet.oop.object.Position;
 
-import com.uet.oop.rendering.Renderable;
-import java.awt.image.BufferedImage;
-
-public abstract class PowerUp implements Renderable {
+public abstract class PowerUp {
     protected Position position;
 //    protected BufferedImage texture;
 

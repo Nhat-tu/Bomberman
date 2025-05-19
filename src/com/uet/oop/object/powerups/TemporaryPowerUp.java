@@ -1,12 +1,13 @@
-package com.uet.oop.object;
+package com.uet.oop.object.powerups;
 
-import java.awt.Graphics2D;
+import com.uet.oop.object.Player;
+import com.uet.oop.object.Position;
 
-public class TemporaryPowerUp extends PowerUp {
+public abstract class TemporaryPowerUp extends PowerUp {
     private int duration;
 
 
-    public TemporaryPowerUp(PowerUpType type, Position position) {
+    public TemporaryPowerUp(PowerUpType type) {
         super(type);
         this.duration = 15000; // ms
     }
@@ -20,20 +21,8 @@ public class TemporaryPowerUp extends PowerUp {
     }
 
     @Override
-    public void applyPowerUp(Player player) {
-        player.currentPowerups.add(this);
-        /* player collides with it -> start time count */
-        // if (time counter == duration) {
-        //     removePowerUp(player);
-        // }
+    public abstract void applyPowerUp(Player player);
 
-    }
+    public abstract void removePowerUp(Player player);
 
-    public void removePowerUp(Player player) {
-        player.currentPowerups.remove(this);
-    }
-
-    public void draw(Graphics2D g) {
-
-    }
 }

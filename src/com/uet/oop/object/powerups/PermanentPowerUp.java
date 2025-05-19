@@ -1,19 +1,14 @@
-package com.uet.oop.object;
+package com.uet.oop.object.powerups;
 
 
-import java.awt.Graphics2D;
+import com.uet.oop.object.Player;
 
-public class PermanentPowerUp extends PowerUp {
+public abstract class PermanentPowerUp extends PowerUp {
     public PermanentPowerUp(PowerUpType type) {
         super(type);
     }
 
     @Override
-    public void applyPowerUp(Player player) {
-        player.currentPowerups.add(this);
-    }
+    public abstract void applyPowerUp(Player player);
 
-    public void draw(Graphics2D g) {
-
-    }
 }
