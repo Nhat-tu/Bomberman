@@ -3,6 +3,6 @@ import com.uet.oop.core.*;
 public class Main {
     public static void main(String[] args) {
         Game instance1 = Game.INSTANCE;
-        System.out.println(instance1);
+        System.out.println("Game: " + instance1 + " started");
     }
 }

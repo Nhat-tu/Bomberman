@@ -28,17 +28,26 @@ jobs:
       - name: Build with Gradle
         run: ./gradlew build
 
-      - name: Find JAR file
-        id: find_jar
+      - name: Find JAR file (Linux)
+        if: ${{ runner.os == 'Linux' }}
+        id: find_jar_linux
         run: |
           JAR_FILE=$(find build/libs/ -name "*.jar" -not -name "*-sources.jar" -not -name "*-javadoc.jar")
+          echo "JAR_FILE=$JAR_FILE" >> "$GITHUB_OUTPUT"
+
+      - name: Find JAR file (Windows)
+        if: ${{ runner.os == 'Windows' }}
+        id: find_jar_windows
+        run: |
+          Get-ChildItem -Path "build\libs\*.jar" -Exclude "*-sources.jar", "*-javadoc.jar" | Select-Object -First 1 -ExpandProperty FullName | Out-File -Encoding UTF8 -FilePath jar_path.txt
+          JAR_FILE=$(Get-Content -Path jar_path.txt)
           echo "JAR_FILE=$JAR_FILE" >> "$GITHUB_OUTPUT"
 
       - name: Upload JAR as artifact
         uses: actions/upload-artifact@v4
         with:
           name: ${{ matrix.os }}-app
-          path: ${{ steps.find_jar.outputs.JAR_FILE }}
+          path: ${{ steps.find_jar_linux.outputs.JAR_FILE || steps.find_jar_windows.outputs.JAR_FILE }}
 
   release:
     needs: build
@@ -58,6 +67,18 @@ jobs:
           name: windows-latest-app
           path: windows_jar
 
+      - name: Get Linux JAR filename
+        id: linux_jar_info
+        run: |
+          LINUX_JAR=$(ls linux_jar/*.jar)
+          echo "asset_name=$(basename "$LINUX_JAR")" >> "$GITHUB_OUTPUT"
+
+      - name: Get Windows JAR filename
+        id: windows_jar_info
+        run: |
+          WINDOWS_JAR=$(ls windows_jar/*.jar)
+          echo "asset_name=$(basename "$WINDOWS_JAR")" >> "$GITHUB_OUTPUT"
+
       - name: Create GitHub Release
         uses: actions/create-release@v1
         env:
@@ -74,15 +95,3 @@ jobs:
           files: |
             linux_jar/${{ steps.linux_jar_info.outputs.asset_name }}
             windows_jar/${{ steps.windows_jar_info.outputs.asset_name }}
-
-      - name: Get Linux JAR filename
-        id: linux_jar_info
-        run: |
-          LINUX_JAR=$(ls linux_jar/*.jar)
-          echo "asset_name=$(basename "$LINUX_JAR")" >> "$GITHUB_OUTPUT"
-
-      - name: Get Windows JAR filename
-        id: windows_jar_info
-        run: |
-          WINDOWS_JAR=$(ls windows_jar/*.jar)
-          echo "asset_name=$(basename "$WINDOWS_JAR")" >> "$GITHUB_OUTPUT"
