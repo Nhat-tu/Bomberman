@@ -6,10 +6,11 @@ import java.awt.image.BufferedImage;
 
 public abstract class PowerUp implements Renderable {
     protected Position position;
-    protected BufferedImage texture;
+//    protected BufferedImage texture;
 
     public enum PowerUpType {
         // Classic power-ups
+        NULL,
         BOMB_UP, // Increases the number of bombs that player can place simultaneously.
         FIRE_UP, // Increases explosion radius of the bombs.
         SPEED_UP, // Increases base speed of player.

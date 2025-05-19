@@ -10,7 +10,7 @@ public class PermanentPowerUp extends PowerUp {
 
     @Override
     public void applyPowerUp(Player player) {
-
+        player.currentPowerups.add(this);
     }
 
     public void draw(Graphics2D g) {
