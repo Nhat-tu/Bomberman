@@ -1,12 +1,13 @@
 package com.uet.oop.object;
 
+import java.awt.Graphics2D;
 
-public abstract class TemporaryPowerUp extends PowerUp {
+public class TemporaryPowerUp extends PowerUp {
     private int duration;
 
 
     public TemporaryPowerUp(PowerUpType type, Position position) {
-        super(type, position);
+        super(type);
     }
 
     public int getDuration() {
@@ -18,7 +19,15 @@ public abstract class TemporaryPowerUp extends PowerUp {
     }
 
     @Override
-    public abstract void applyPowerUp(Player player);
+    public void applyPowerUp(Player player) {
 
-    public abstract void removePowerUp(Player player);
+    }
+
+    public void removePowerUp(Player player) {
+
+    }
+
+    public void draw(Graphics2D g) {
+
+    }
 }

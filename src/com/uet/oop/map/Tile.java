@@ -6,7 +6,6 @@ import com.uet.oop.rendering.Animation;
 import com.uet.oop.rendering.Renderable;
 import com.uet.oop.rendering.TextureManager;
 
-import java.util.HashMap;
 import java.util.Map;
 
 public abstract class Tile implements Renderable {

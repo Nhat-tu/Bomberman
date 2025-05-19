@@ -1,8 +1,13 @@
 package com.uet.oop.object;
 
 
-public abstract class PowerUp {
-    private Position position;
+import com.uet.oop.rendering.Renderable;
+import java.awt.image.BufferedImage;
+
+public abstract class PowerUp implements Renderable {
+    protected Position position;
+    protected BufferedImage texture;
+
     public enum PowerUpType {
         // Classic power-ups
         BOMB_UP, // Increases the number of bombs that player can place simultaneously.
@@ -21,13 +26,20 @@ public abstract class PowerUp {
     }
     private PowerUpType type;
 
-    public PowerUp(PowerUpType type, Position position) {
-        this.position = position;
+    public PowerUp(PowerUpType type) {
         this.type = type;
     }
 
     public PowerUpType getType() {
         return type;
+    }
+
+    public Position getPosition() {
+        return position;
+    }
+
+    public void setPosition(Position position) {
+        this.position = position;
     }
 
     public abstract void applyPowerUp(Player player);
