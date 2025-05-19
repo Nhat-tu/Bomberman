@@ -32,7 +32,7 @@ jobs:
         if: ${{ runner.os == 'Linux' }}
         id: find_jar_linux
         run: |
-          JAR_FILE=$(find build/libs/ -name "*.jar" -not -name "*-sources.jar" -not -name "*-javadoc.jar")
+          $JAR_FILE = Get-Content -Path jar_path.txt
           echo "JAR_FILE=$JAR_FILE" >> "$GITHUB_OUTPUT"
 
       - name: Find JAR file (Windows)
@@ -40,7 +40,7 @@ jobs:
         id: find_jar_windows
         run: |
           Get-ChildItem -Path "build\libs\*.jar" -Exclude "*-sources.jar", "*-javadoc.jar" | Select-Object -First 1 -ExpandProperty FullName | Out-File -Encoding UTF8 -FilePath jar_path.txt
-          JAR_FILE=$(Get-Content -Path jar_path.txt)
+          $JAR_FILE = Get-Content -Path jar_path.txt
           echo "JAR_FILE=$JAR_FILE" >> "$GITHUB_OUTPUT"
 
       - name: Upload JAR as artifact
