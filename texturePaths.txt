@@ -15,6 +15,9 @@
 /sprites/brick_exploded.png
 /sprites/brick_exploded_1.png
 /sprites/brick_exploded_2.png
+/sprites/brick_exploded_3.png
+/sprites/brick_exploded_4.png
+/sprites/brick_exploded_5.png
 /sprites/doll_dead.png
 /sprites/doll_left_1.png
 /sprites/doll_left_2.png

@@ -1,10 +1,12 @@
 package com.uet.oop.object;
 
 import com.uet.oop.rendering.Animation;
+import com.uet.oop.rendering.Renderable;
+
 import java.util.Map;
 
-public abstract class GameEntity {
-    protected Position position;
+public abstract class GameEntity implements Renderable {
+    protected Position mapPosition; // actual position in "world", not in game screen
     protected int movementSpeed;
     protected int hitPoints;
 
@@ -14,24 +16,25 @@ public abstract class GameEntity {
     public abstract void movement();
     public abstract void takeDamage();
     public abstract void die();
+    public abstract void update();
 
-    public abstract void setupAnimation();
-    public abstract void setAnimation(String animationName);
+    protected abstract void setupAnimation();
+    protected abstract void setAnimation(String animationName);
 
     public int getMovementSpeed() {
         return movementSpeed;
     }
 
-    public Position getPosition() {
-        return position;
+    public Position getMapPosition() {
+        return mapPosition;
     }
 
     public int getHitPoints() {
         return hitPoints;
     }
 
-    public void setPosition(Position position) {
-        this.position = position;
+    public void setMapPosition(Position mapPosition) {
+        this.mapPosition = mapPosition;
     }
 
     public void setMovementSpeed(int movementSpeed) {

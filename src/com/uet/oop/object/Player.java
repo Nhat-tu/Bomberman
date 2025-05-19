@@ -3,7 +3,6 @@ package com.uet.oop.object;
 import com.uet.oop.core.GameWindow;
 import com.uet.oop.core.KeyboardHandler;
 import com.uet.oop.rendering.Animation;
-import com.uet.oop.rendering.Renderable;
 import com.uet.oop.rendering.TextureManager;
 
 import java.awt.Color;
@@ -14,7 +13,8 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
-public class Player extends GameEntity implements Renderable {
+public class Player extends GameEntity {
+    private Position screenPosition;
     private int bombs;
     private int explosionRadius;
     private int invulnerabilityTimer;
@@ -31,10 +31,12 @@ public class Player extends GameEntity implements Renderable {
         this.textureManager = textureManager;
         this.currentPowerups = new ArrayList<>();
         this.animations = new HashMap<>();
+        this.screenPosition = new Position(gw.screenWidth / 2 - gw.tileSize / 2, gw.screenHeight / 2 - gw.tileSize / 2); // centered
+        setupAnimation();
     }
 
     public void setDefaultValues() {
-        this.position = new Position();
+        this.mapPosition = new Position(48,48);
         this.movementSpeed = 7;
         this.hitPoints = 2;
         this.bombs = 1;
@@ -44,11 +46,12 @@ public class Player extends GameEntity implements Renderable {
     }
 
     public void setupAnimation() {
-        int framesPerAnimation = 4;
+        int framesPerMoveAnimation = 4;
+        int framesPerDeathAnimation = 6;
 
 // ------------------------------------
         // move left anim
-        BufferedImage[] moveLeftFrames = new BufferedImage[framesPerAnimation];
+        BufferedImage[] moveLeftFrames = new BufferedImage[framesPerMoveAnimation];
 
         moveLeftFrames[0] = textureManager.getTexture("player_left_1.png");
         moveLeftFrames[1] = textureManager.getTexture("player_left.png");
@@ -59,7 +62,7 @@ public class Player extends GameEntity implements Renderable {
         animations.put("moveLeftAnimation", moveLeftAnimation);
 
         // move right anim
-        BufferedImage[] moveRightFrames = new BufferedImage[framesPerAnimation];
+        BufferedImage[] moveRightFrames = new BufferedImage[framesPerMoveAnimation];
 
         moveRightFrames[0] = textureManager.getTexture("player_right_1.png");
         moveRightFrames[1] = textureManager.getTexture("player_right.png");
@@ -70,7 +73,7 @@ public class Player extends GameEntity implements Renderable {
         animations.put("moveRightAnimation", moveRightAnimation);
 
         // move up anim
-        BufferedImage[] moveUpFrames = new BufferedImage[framesPerAnimation];
+        BufferedImage[] moveUpFrames = new BufferedImage[framesPerMoveAnimation];
 
         moveUpFrames[0] = textureManager.getTexture("player_up_1.png");
         moveUpFrames[1] = textureManager.getTexture("player_up.png");
@@ -81,7 +84,7 @@ public class Player extends GameEntity implements Renderable {
         animations.put("moveUpAnimation", moveUpAnimation);
 
         // move down anim
-        BufferedImage[] moveDownFrames = new BufferedImage[framesPerAnimation];
+        BufferedImage[] moveDownFrames = new BufferedImage[framesPerMoveAnimation];
 
         moveDownFrames[0] = textureManager.getTexture("player_down_1.png");
         moveDownFrames[1] = textureManager.getTexture("player_down.png");
@@ -123,19 +126,19 @@ public class Player extends GameEntity implements Renderable {
     public void movement() {
         if (keyH.isKeyPressed(KeyEvent.VK_W)) {
             setAnimation("moveUpAnimation");
-            position.setY(position.getY() - movementSpeed);
+            mapPosition.setY(mapPosition.getY() - movementSpeed);
             currentAnimation.update();
         } else if (keyH.isKeyPressed(KeyEvent.VK_S)) {
             setAnimation("moveDownAnimation");
-            position.setY(position.getY() + movementSpeed);
+            mapPosition.setY(mapPosition.getY() + movementSpeed);
             currentAnimation.update();
         } else if (keyH.isKeyPressed(KeyEvent.VK_A)) {
             setAnimation("moveLeftAnimation");
-            position.setX(position.getX() - movementSpeed);
+            mapPosition.setX(mapPosition.getX() - movementSpeed);
             currentAnimation.update();
         } else if (keyH.isKeyPressed(KeyEvent.VK_D)) {
             setAnimation("moveRightAnimation");
-            position.setX(position.getX() + movementSpeed);
+            mapPosition.setX(mapPosition.getX() + movementSpeed);
             currentAnimation.update();
         }
     }
@@ -146,22 +149,47 @@ public class Player extends GameEntity implements Renderable {
             frameToRender = currentAnimation.getCurrentFrame();
         }
         if (frameToRender != null) {
-            g.drawImage(frameToRender, position.getX(), position.getY(), gw.tileSize, gw.tileSize,null);
+            // if the player goes past designated screenX and screenY (the screen center)
+            // fix it in the screen center
+            // otherwise, move freely
+            // see also draw() in TileManager
+            int x = getScreenPosition().getX();
+            int y = getScreenPosition().getY();
+
+            if (x > getMapPosition().getX()) { // to the left edge
+                x = getMapPosition().getX();
+            }
+            if (y > getMapPosition().getY()) { // to the upper edge
+                y = getMapPosition().getY();
+            }
+            // to the right edge
+            int rightOffset = gw.screenWidth - getScreenPosition().getX();
+            if (rightOffset > gw.mapWidth - getMapPosition().getX()) {
+                x = gw.screenWidth - (gw.mapWidth - getMapPosition().getX());
+            }
+            // to the bottom edge
+            int bottomOffset = gw.screenHeight - getScreenPosition().getY();
+            if (bottomOffset > gw.mapHeight - getMapPosition().getY()) {
+                y = gw.screenHeight - (gw.mapHeight - getMapPosition().getY());
+            }
+
+            g.drawImage(frameToRender, x, y, gw.tileSize, gw.tileSize,null);
         } else { // if fails then
             g.setColor(Color.RED);
-            g.fillRect(position.getX(), position.getY(), gw.tileSize, gw.tileSize);
+            g.fillRect(screenPosition.getX(), screenPosition.getY(), gw.tileSize, gw.tileSize);
         }
     }
 
     @Override
     public void takeDamage() {
         hitPoints -= 1;
-        /* runs death animation */
-        /* reset player state, position */
+        die();
     }
 
     @Override
-    public void die() { // should be renamed as endGame
+    public void die() { //
+        /* runs death animation */
+        /* reset player state, position */
         if (hitPoints == 0) {
             /* ENDGAME */
         }
@@ -169,5 +197,9 @@ public class Player extends GameEntity implements Renderable {
 
     public void placeBombs() {
         /* TODO */
+    }
+
+    public Position getScreenPosition() {
+        return screenPosition;
     }
 }

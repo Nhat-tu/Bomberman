@@ -4,11 +4,14 @@ import com.uet.oop.core.GameWindow;
 import com.uet.oop.rendering.Animation;
 import com.uet.oop.rendering.TextureManager;
 
+import java.awt.Color;
+import java.awt.Graphics2D;
 import java.awt.image.BufferedImage;
 
 public class Balloom extends Enemy {
     public Balloom(GameWindow gw, TextureManager textureManager) {
         super(gw, textureManager);
+        setupAnimation();
     }
 
     @Override
@@ -81,5 +84,15 @@ public class Balloom extends Enemy {
             System.err.println("Couldn't find Balloom's animation: " + animationName);
             currentAnimation = null;
         }
+    }
+
+    public void update() {
+        movement();
+        takeDamage();
+        die();
+    }
+
+    public void draw(Graphics2D g) {
+
     }
 }

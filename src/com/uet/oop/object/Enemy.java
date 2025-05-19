@@ -41,6 +41,9 @@ public abstract class Enemy extends GameEntity {
     @Override
     public void takeDamage() {
         hitPoints -= 1;
+        if (hitPoints == 0) {
+            die();
+        }
     }
 
     /**
