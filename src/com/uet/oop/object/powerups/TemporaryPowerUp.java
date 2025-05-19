@@ -1,12 +1,15 @@
-package com.uet.oop.object;
+package com.uet.oop.object.powerups;
 
+import com.uet.oop.object.Player;
+import com.uet.oop.object.Position;
 
 public abstract class TemporaryPowerUp extends PowerUp {
     private int duration;
 
 
-    public TemporaryPowerUp(PowerUpType type, Position position) {
-        super(type, position);
+    public TemporaryPowerUp(PowerUpType type) {
+        super(type);
+        this.duration = 15000; // ms
     }
 
     public int getDuration() {
@@ -21,4 +24,5 @@ public abstract class TemporaryPowerUp extends PowerUp {
     public abstract void applyPowerUp(Player player);
 
     public abstract void removePowerUp(Player player);
+
 }

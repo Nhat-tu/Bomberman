@@ -6,12 +6,12 @@ import com.uet.oop.rendering.Animation;
 import com.uet.oop.rendering.Renderable;
 import com.uet.oop.rendering.TextureManager;
 
-import java.util.HashMap;
 import java.util.Map;
 
 public abstract class Tile implements Renderable {
     protected Position position;
     protected boolean collided = false;
+    protected boolean collideWithEntity = false;
 
     protected GameWindow gw;
     protected TextureManager textureManager;

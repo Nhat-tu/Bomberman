@@ -1,7 +1,7 @@
 package com.uet.oop.map;
 
 import com.uet.oop.core.GameWindow;
-import com.uet.oop.object.PowerUp;
+import com.uet.oop.object.powerups.PowerUp;
 import com.uet.oop.rendering.Animation;
 import com.uet.oop.rendering.TextureManager;
 
@@ -11,10 +11,12 @@ import java.util.HashMap;
 
 public class DestructibleTile extends Tile {
     protected PowerUp potentialPowerUp;
+    public boolean isDestroyed = false;
 
     public DestructibleTile(PowerUp potentialPowerUp, GameWindow gw, TextureManager textureManager) {
         this.tileType = TileType.DESTRUCTIBLE;
         this.potentialPowerUp = potentialPowerUp;
+        this.collideWithEntity = true;
         this.gw = gw;
         this.textureManager = textureManager;
 
@@ -26,6 +28,11 @@ public class DestructibleTile extends Tile {
     }
 
     public void destroyed() {
+        isDestroyed = true;
+        if (potentialPowerUp.getType() == PowerUp.PowerUpType.NULL) {
+            collideWithEntity = false;
+        }
+
         /* TODO */
     }
 
@@ -38,12 +45,21 @@ public class DestructibleTile extends Tile {
         animations.put("brick", brickImg);
 
         // destroyed brick
-        BufferedImage[] explodedBrick = new BufferedImage[5];
-        explodedBrick[0] = textureManager.getTexture("brick_exploded_1.png");
-        explodedBrick[1] = textureManager.getTexture("brick_exploded_2.png");
-        explodedBrick[2] = textureManager.getTexture("brick_exploded_3.png");
-        explodedBrick[3] = textureManager.getTexture("brick_exploded_4.png");
-        explodedBrick[4] = textureManager.getTexture("brick_exploded_5.png");
+        BufferedImage[] explodedBrick = new BufferedImage[7];
+        explodedBrick[0] = textureManager.getTexture("brick_exploded.png");
+        explodedBrick[1] = textureManager.getTexture("brick_exploded_1.png");
+        explodedBrick[2] = textureManager.getTexture("brick_exploded_2.png");
+        explodedBrick[3] = textureManager.getTexture("brick_exploded_3.png");
+        explodedBrick[4] = textureManager.getTexture("brick_exploded_4.png");
+        explodedBrick[5] = textureManager.getTexture("brick_exploded_5.png");
+        switch (potentialPowerUp.getType()) {
+            case PowerUp.PowerUpType.BOMB_UP ->
+                explodedBrick[6] = textureManager.getTexture("powerup_bombs.png");
+            case PowerUp.PowerUpType.FIRE_UP ->
+                explodedBrick[6] = textureManager.getTexture("powerup_flames.png");
+            case PowerUp.PowerUpType.SPEED_UP ->
+                explodedBrick[6] = textureManager.getTexture("powerup_speed.png");
+        }
         Animation explodedBrickAnimation = new Animation(explodedBrick, 100, false);
         animations.put("explodedBrick", explodedBrickAnimation);
 
