@@ -1,10 +1,15 @@
-package com.uet.oop.object;
+package com.uet.oop.object.powerups;
 
+import com.uet.oop.object.Player;
+import com.uet.oop.object.Position;
 
 public abstract class PowerUp {
-    private Position position;
+    protected Position position;
+//    protected BufferedImage texture;
+
     public enum PowerUpType {
         // Classic power-ups
+        NULL,
         BOMB_UP, // Increases the number of bombs that player can place simultaneously.
         FIRE_UP, // Increases explosion radius of the bombs.
         SPEED_UP, // Increases base speed of player.
@@ -21,13 +26,20 @@ public abstract class PowerUp {
     }
     private PowerUpType type;
 
-    public PowerUp(PowerUpType type, Position position) {
-        this.position = position;
+    public PowerUp(PowerUpType type) {
         this.type = type;
     }
 
     public PowerUpType getType() {
         return type;
+    }
+
+    public Position getPosition() {
+        return position;
+    }
+
+    public void setPosition(Position position) {
+        this.position = position;
     }
 
     public abstract void applyPowerUp(Player player);

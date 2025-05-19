@@ -2,6 +2,7 @@ package com.uet.oop.object;
 
 import com.uet.oop.core.GameWindow;
 import com.uet.oop.core.KeyboardHandler;
+import com.uet.oop.object.powerups.PowerUp;
 import com.uet.oop.rendering.Animation;
 import com.uet.oop.rendering.TextureManager;
 
@@ -18,7 +19,7 @@ public class Player extends GameEntity {
     private int bombs;
     private int explosionRadius;
     private int invulnerabilityTimer;
-    private List<PowerUp> currentPowerups;
+    public List<PowerUp> currentPowerups;
 
     GameWindow gw;
     KeyboardHandler keyH;
