@@ -4,19 +4,20 @@ import com.uet.oop.core.GameWindow;
 import com.uet.oop.rendering.Animation;
 import com.uet.oop.rendering.TextureManager;
 
-import java.awt.Color;
-import java.awt.Graphics2D;
+import java.awt.*;
 import java.awt.image.BufferedImage;
 import java.util.HashMap;
 
 public class GrassTile extends Tile {
 
     public GrassTile(GameWindow gw, TextureManager textureManager) {
+        this.tileType = TileType.PASSABLE;
         this.gw = gw;
         this.textureManager = textureManager;
 
         this.animations = new HashMap<>();
         this.currentAnimation = null;
+        this.hitRect = new Rectangle(0, 0, gw.tileSize, gw.tileSize);
         setUpAnimations();
     }
 

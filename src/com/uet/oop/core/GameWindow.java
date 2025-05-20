@@ -34,7 +34,7 @@ public class GameWindow extends JPanel implements Runnable {
     KeyboardHandler keyHandler;
     RenderManager renderManager;
     TextureManager textureManager;
-    TileManager tileManager;
+    public TileManager tileManager;
     public Player player;
 
 /*    --- Load game resources --- */
@@ -47,8 +47,9 @@ public class GameWindow extends JPanel implements Runnable {
 
         // can add more
         textureManager.bulkLoadTexture();
-        player = new Player(this, keyHandler, this.textureManager); // migrate setUpAnimation to constructor
-        tileManager = new TileManager(this, textureManager);
+        tileManager = new TileManager(this, this.textureManager);
+        player = new Player(this, this.keyHandler, this.textureManager); // migrate setUpAnimation to constructor
+        tileManager.readyMap();
 
         // can add more
         renderManager.addRenderable(player);

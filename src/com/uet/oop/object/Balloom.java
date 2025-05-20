@@ -1,6 +1,7 @@
 package com.uet.oop.object;
 
 import com.uet.oop.core.GameWindow;
+import com.uet.oop.map.TileManager;
 import com.uet.oop.rendering.Animation;
 import com.uet.oop.rendering.TextureManager;
 
@@ -9,8 +10,8 @@ import java.awt.Graphics2D;
 import java.awt.image.BufferedImage;
 
 public class Balloom extends Enemy {
-    public Balloom(GameWindow gw, TextureManager textureManager) {
-        super(gw, textureManager);
+    public Balloom(GameWindow gw, TextureManager textureManager, TileManager tileManager) {
+        super(gw, textureManager, tileManager);
         setupAnimation();
     }
 

@@ -6,6 +6,7 @@ import com.uet.oop.rendering.TextureManager;
 import com.uet.oop.object.Position;
 
 import java.awt.Graphics2D;
+import java.awt.Rectangle;
 
 import java.io.BufferedReader;
 import java.io.InputStream;
@@ -16,6 +17,7 @@ import java.util.Map;
 public class TileManager {
     private Map<Character, Tile> tiles; // stores all types of Tile for use
     private char[][] charMap;
+    private Position[][] tilePositions;
 
     GameWindow gw;
     TextureManager textureManager;
@@ -31,6 +33,7 @@ public class TileManager {
     private void setDefault() {
         this.tiles = new HashMap<>();
         this.charMap = new char[gw.mapRow][gw.mapCol];
+        this.tilePositions = new Position[gw.mapRow][gw.mapCol];
     }
 
     public void getTiles() {
@@ -69,10 +72,46 @@ public class TileManager {
         }
     }
 
-    public void draw(Graphics2D g) {
+    public boolean CheckCollision(Rectangle objectRect) {
+        for (int row = 0; row < gw.mapRow; row++ ) {
+            for (int col = 0; col < gw.mapCol; col++) {
+                Tile currentTile = tiles.get(charMap[row][col]);
+
+                if (currentTile.getTileType() != Tile.TileType.PASSABLE) {
+                    // map pos
+                    int mapTileX = col * gw.tileSize;
+                    int mapTileY = row * gw.tileSize;
+
+                    Rectangle mapTileRect = new Rectangle(
+                            mapTileX + currentTile.hitRect.x,
+                            mapTileY + currentTile.hitRect.y,
+                            currentTile.hitRect.width,
+                            currentTile.hitRect.height
+                    );
+
+                    if (mapTileRect.intersects(objectRect)) {
+                        return true;
+                    }
+                }
+            }
+        }
+        return false;
+    }
+
+    // used when player picks up Powerup
+    // D.Tile destroyed() -> isDestroyed = true && type changes to PASSABLE if it has no powerup
+    // if (player collides DTile && DTile.isDestroyed) destroyTile(Tile.getPosition)
+    public void destroyTile(Position tilePosition) {
+        int tileRow = tilePosition.getY() / gw.tileSize;
+        int tileCol = tilePosition.getX() / gw.tileSize;
+        if (tiles.get(charMap[tileRow][tileCol]).getTileType() == Tile.TileType.DESTRUCTIBLE) {
+            charMap[tileRow][tileCol] = ' ';
+        }
+    }
+
+    public void readyMap() {
         for (int i = 0; i < gw.mapRow; i++) {
             for (int j = 0; j < gw.mapCol; j++) {
-                Tile currentTile = tiles.get(charMap[i][j]);
 
                 int mapX = j * gw.tileSize;
                 int mapY = i * gw.tileSize;
@@ -81,24 +120,35 @@ public class TileManager {
 
                 // stop moving camera at the edge
                 // see also draw() in Player
-                if (gw.player.getScreenPosition().getX() > gw.player.getMapPosition().getX()) { // to the left edge
+                if (gw.player.getScreenPosition().getX() > gw.player.getMapPosition().getX()) { // past the left edge
                     screenX = mapX;
                 }
-                if (gw.player.getScreenPosition().getY() > gw.player.getMapPosition().getY()) { // to the upper edge
+                if (gw.player.getScreenPosition().getY() > gw.player.getMapPosition().getY()) { // past the upper edge
                     screenY = mapY;
                 }
-                // to the right edge
+                // past the right edge
                 int rightOffset = gw.screenWidth - gw.player.getScreenPosition().getX();
                 if (rightOffset > gw.mapWidth - gw.player.getMapPosition().getX()) {
                     screenX = gw.screenWidth - (gw.mapWidth - mapX);
                 }
-                // to the bottom edge
+                // past the bottom edge
                 int bottomOffset = gw.screenHeight - gw.player.getScreenPosition().getY();
                 if (bottomOffset > gw.mapHeight - gw.player.getMapPosition().getY()) {
                     screenY = gw.screenHeight - (gw.mapHeight - mapY);
                 }
 
-                currentTile.setPosition(new Position(screenX, screenY));
+                tilePositions[i][j] = new Position(screenX, screenY);
+            }
+        }
+    }
+
+    public void draw(Graphics2D g) {
+        readyMap();
+        for (int i = 0; i < gw.mapRow; i++) {
+            for (int j = 0; j < gw.mapCol; j++) {
+                Tile currentTile = tiles.get(charMap[i][j]);
+                currentTile.setPosition(tilePositions[i][j]);
+
                 currentTile.draw(g);
             }
         }

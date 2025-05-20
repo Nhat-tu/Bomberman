@@ -6,20 +6,22 @@ import com.uet.oop.rendering.Animation;
 import com.uet.oop.rendering.Renderable;
 import com.uet.oop.rendering.TextureManager;
 
+import java.awt.Rectangle;
 import java.util.Map;
 
 public abstract class Tile implements Renderable {
-    protected Position position;
-    protected boolean collided = false;
-    protected boolean collideWithEntity = false;
-
     protected GameWindow gw;
     protected TextureManager textureManager;
+
+    protected Position position;
+    protected Rectangle hitRect;
+//    protected boolean collideWithEntity = false;
 
     protected Map<String, Animation> animations;
     protected Animation currentAnimation;
 
     public enum TileType {
+        PASSABLE,
         INDESTRUCTIBLE,
         DESTRUCTIBLE
     }

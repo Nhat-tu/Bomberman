@@ -16,23 +16,24 @@ public class DestructibleTile extends Tile {
     public DestructibleTile(PowerUp potentialPowerUp, GameWindow gw, TextureManager textureManager) {
         this.tileType = TileType.DESTRUCTIBLE;
         this.potentialPowerUp = potentialPowerUp;
-        this.collideWithEntity = true;
+//        this.collideWithEntity = true;
         this.gw = gw;
         this.textureManager = textureManager;
 
         this.animations = new HashMap<>();
         this.currentAnimation = null;
+        this.hitRect = new Rectangle(0, 0, gw.tileSize, gw.tileSize);
 
         setUpAnimations();
 
     }
 
     public void destroyed() {
+        setAnimations("explodedBrick");
         isDestroyed = true;
         if (potentialPowerUp.getType() == PowerUp.PowerUpType.NULL) {
-            collideWithEntity = false;
+            this.tileType = TileType.PASSABLE;
         }
-
         /* TODO */
     }
 
@@ -59,6 +60,8 @@ public class DestructibleTile extends Tile {
                 explodedBrick[6] = textureManager.getTexture("powerup_flames.png");
             case SPEED_UP ->
                 explodedBrick[6] = textureManager.getTexture("powerup_speed.png");
+            case NULL ->
+                explodedBrick[6] = textureManager.getTexture("grass.png");
         }
         Animation explodedBrickAnimation = new Animation(explodedBrick, 100, false);
         animations.put("explodedBrick", explodedBrickAnimation);
