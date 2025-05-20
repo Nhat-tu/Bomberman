@@ -3,12 +3,14 @@ package com.uet.oop.object;
 import com.uet.oop.rendering.Animation;
 import com.uet.oop.rendering.Renderable;
 
+import java.awt.Rectangle;
 import java.util.Map;
 
 public abstract class GameEntity implements Renderable {
     protected Position mapPosition; // actual position in "world", not in game screen
     protected int movementSpeed;
     protected int hitPoints;
+    protected Rectangle hitRect;
 
     protected Map<String, Animation> animations;
     protected Animation currentAnimation;

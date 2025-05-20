@@ -1,18 +1,22 @@
 package com.uet.oop.object;
 
 import com.uet.oop.core.GameWindow;
+import com.uet.oop.map.TileManager;
 import com.uet.oop.rendering.TextureManager;
 
+import java.awt.Rectangle;
 import java.util.HashMap;
 
 public abstract class Enemy extends GameEntity {
     GameWindow gw;
     TextureManager textureManager;
+    TileManager map;
 
-    public Enemy(GameWindow gw, TextureManager textureManager) {
+    public Enemy(GameWindow gw, TextureManager textureManager, TileManager tileManager) {
         setDefaultValues();
         this.gw = gw;
         this.textureManager = textureManager;
+        this.map = tileManager;
         this.animations = new HashMap<>();
     }
 
@@ -21,6 +25,12 @@ public abstract class Enemy extends GameEntity {
         this.hitPoints = 1;
         this.movementSpeed = 6;
         this.currentAnimation = null;
+        this.hitRect = new Rectangle(
+                0,
+                0,
+                48,
+                48
+        );
     }
 
     /**
