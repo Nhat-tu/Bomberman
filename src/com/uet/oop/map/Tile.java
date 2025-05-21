@@ -23,7 +23,9 @@ public abstract class Tile implements Renderable {
     public enum TileType {
         PASSABLE,
         INDESTRUCTIBLE,
-        DESTRUCTIBLE
+        DESTRUCTIBLE,
+        BOMB,
+        EXPLOSION_AREA
     }
 
     TileType tileType;
