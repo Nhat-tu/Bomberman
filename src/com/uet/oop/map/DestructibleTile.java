@@ -29,10 +29,13 @@ public class DestructibleTile extends Tile {
     }
 
     public void destroyed() {
-        setAnimations("explodedBrick");
-        isDestroyed = true;
-        if (potentialPowerUp.getType() == PowerUp.PowerUpType.NULL) {
+        this.setAnimations("explodedBrick");
+        this.isDestroyed = true;
+        if (this.potentialPowerUp.getType() == PowerUp.PowerUpType.NULL) {
             this.tileType = TileType.PASSABLE;
+        }
+        if (this.currentAnimation != null) {
+            this.currentAnimation.resetAndStart();
         }
         /* TODO */
     }
