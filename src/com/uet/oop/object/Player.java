@@ -19,6 +19,7 @@ import java.util.List;
 public class Player extends GameEntity {
     private Position screenPosition;
     private int bombs;
+    private final int maxBombs = 3;
     private int explosionRadius;
     private int invulnerabilityTimer;
     public List<Bomb> currentBombs;
@@ -33,7 +34,7 @@ public class Player extends GameEntity {
         this.gw = gw;
         this.keyH = keyH;
         this.textureManager = textureManager;
-        this.currentBombs = new ArrayList<>(1);
+        this.currentBombs = new ArrayList<>();
         this.currentPowerups = new ArrayList<>();
         this.animations = new HashMap<>();
         this.screenPosition = new Position(gw.screenWidth / 2 - gw.tileSize / 2, gw.screenHeight / 2 - gw.tileSize / 2); // centered
@@ -42,17 +43,17 @@ public class Player extends GameEntity {
 
     public void setDefaultValues() {
         this.mapPosition = new Position(48,48);
-        this.movementSpeed = 5;
+        this.movementSpeed = 4;
         this.hitPoints = 2;
         this.bombs = 1;
-        this.explosionRadius = 1;
+        this.explosionRadius = 2;
         this.invulnerabilityTimer = 3000; // ms
         this.currentAnimation = null;
         this.hitRect = new Rectangle (
-                8,
-                8,
-                30,
-                31
+                0,
+                0,
+                40,
+                40
         );
     }
 
@@ -129,7 +130,18 @@ public class Player extends GameEntity {
 
     public void update() {
         movement();
-        takeDamage();
+
+        // update and remove done exploded bomb
+        currentBombs.removeIf(bomb -> {
+            bomb.update();
+            if (bomb.isExplosionComplete()) {
+                gw.renderManager.removeRenderable(bomb);
+                return true;
+            }
+            return false;
+        });
+
+//        takeDamage();
         die();
     }
 
@@ -154,6 +166,8 @@ public class Player extends GameEntity {
             setAnimation("moveRightAnimation");
             newX += movementSpeed;
             currentAnimation.update();
+        } else if (keyH.isKeyPressed(KeyEvent.VK_SPACE)) {
+            placeBombs();
         }
 
         // Add boundary checks
@@ -174,11 +188,23 @@ public class Player extends GameEntity {
 
     }
 
-    public void placeBombs(List<Bomb> currentBombs, TileManager tileManager) {
-        if (bombs > currentBombs.size()) {
+    public void placeBombs() {
+        if (currentBombs.size() >= bombs) {
             return;
         }
+        int bombX = (getMapPosition().getX() / gw.tileSize ) * gw.tileSize;
+        int bombY = (getMapPosition().getY() / gw.tileSize ) * gw.tileSize;
+        Position bombPosition = new Position(bombX, bombY);
 
+        for (Bomb bomb : currentBombs) {
+            if (bomb.getMapPosition().equals(bombPosition)) {
+                return;
+            }
+        }
+
+        Bomb newBomb = new Bomb(bombPosition, explosionRadius, this, gw, textureManager);
+        currentBombs.add(newBomb);
+        gw.renderManager.addRenderable(newBomb);
 
     }
 
