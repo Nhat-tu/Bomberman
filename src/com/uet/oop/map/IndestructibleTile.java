@@ -4,8 +4,7 @@ import com.uet.oop.core.GameWindow;
 import com.uet.oop.rendering.Animation;
 import com.uet.oop.rendering.TextureManager;
 
-import java.awt.Color;
-import java. awt.Graphics2D;
+import java.awt.*;
 import java.awt.image.BufferedImage;
 import java.util.HashMap;
 
@@ -18,6 +17,7 @@ public class IndestructibleTile extends Tile {
 
         this.animations = new HashMap<>();
         this.currentAnimation = null;
+        this.hitRect = new Rectangle(0, 0, gw.tileSize, gw.tileSize);
 
         setUpAnimations();
     }
