@@ -28,9 +28,9 @@
 /sprites/explosion_horizontal_0.png
 /sprites/explosion_horizontal_1.png
 /sprites/explosion_horizontal_2.png
-/sprites/explosion_horizontal_left_last2.png
 /sprites/explosion_horizontal_left_last_0.png
 /sprites/explosion_horizontal_left_last_1.png
+/sprites/explosion_horizontal_left_last_2.png
 /sprites/explosion_horizontal_right_last_0.png
 /sprites/explosion_horizontal_right_last_1.png
 /sprites/explosion_horizontal_right_last_2.png

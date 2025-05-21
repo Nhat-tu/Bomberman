@@ -24,8 +24,7 @@ public abstract class Tile implements Renderable {
         PASSABLE,
         INDESTRUCTIBLE,
         DESTRUCTIBLE,
-        BOMB,
-        EXPLOSION_AREA
+        HAS_POWERUP
     }
 
     TileType tileType;

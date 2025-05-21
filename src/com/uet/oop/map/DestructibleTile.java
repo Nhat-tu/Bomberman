@@ -33,6 +33,8 @@ public class DestructibleTile extends Tile {
         this.isDestroyed = true;
         if (this.potentialPowerUp.getType() == PowerUp.PowerUpType.NULL) {
             this.tileType = TileType.PASSABLE;
+        } else {
+            this.tileType = TileType.HAS_POWERUP;
         }
         if (this.currentAnimation != null) {
             this.currentAnimation.resetAndStart();
@@ -49,25 +51,30 @@ public class DestructibleTile extends Tile {
         animations.put("brick", brickImg);
 
         // destroyed brick
-        BufferedImage[] explodedBrick = new BufferedImage[7];
+        BufferedImage[] explodedBrick = new BufferedImage[6];
         explodedBrick[0] = textureManager.getTexture("brick_exploded.png");
         explodedBrick[1] = textureManager.getTexture("brick_exploded_1.png");
         explodedBrick[2] = textureManager.getTexture("brick_exploded_2.png");
         explodedBrick[3] = textureManager.getTexture("brick_exploded_3.png");
         explodedBrick[4] = textureManager.getTexture("brick_exploded_4.png");
         explodedBrick[5] = textureManager.getTexture("brick_exploded_5.png");
-        switch (potentialPowerUp.getType()) {
-            case BOMB_UP ->
-                explodedBrick[6] = textureManager.getTexture("powerup_bombs.png");
-            case FIRE_UP ->
-                explodedBrick[6] = textureManager.getTexture("powerup_flames.png");
-            case SPEED_UP ->
-                explodedBrick[6] = textureManager.getTexture("powerup_speed.png");
-            case NULL ->
-                explodedBrick[6] = textureManager.getTexture("grass.png");
-        }
         Animation explodedBrickAnimation = new Animation(explodedBrick, 100, false);
         animations.put("explodedBrick", explodedBrickAnimation);
+
+        // displayPowerup
+        BufferedImage[] displayPowerupFrames = new BufferedImage[1];
+        switch (potentialPowerUp.getType()) {
+            case BOMB_UP ->
+                displayPowerupFrames[0] = textureManager.getTexture("powerup_bombs.png");
+            case FIRE_UP ->
+                displayPowerupFrames[0] = textureManager.getTexture("powerup_flames.png");
+            case SPEED_UP ->
+                displayPowerupFrames[0] = textureManager.getTexture("powerup_speed.png");
+            case NULL ->
+                displayPowerupFrames[0] = textureManager.getTexture("grass.png");
+        }
+        Animation displayPowerup = new Animation(displayPowerupFrames, 100, true);
+        animations.put("displayPowerup", displayPowerup);
 
         setAnimations("brick");
     }

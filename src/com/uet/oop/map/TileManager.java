@@ -77,21 +77,29 @@ public class TileManager {
     public boolean CheckCollision(Rectangle objectRect) {
         for (int row = 0; row < gw.mapRow; row++ ) {
             for (int col = 0; col < gw.mapCol; col++) {
-                Tile currentTile = tiles.get(charMap[row][col]);
+                Position mapPos = new Position(col * gw.tileSize, row * gw.tileSize);
+                Tile currentTile = getTileAt(mapPos);
 
                 if (currentTile.getTileType() != Tile.TileType.PASSABLE) {
-                    // map pos
-                    int mapTileX = col * gw.tileSize;
-                    int mapTileY = row * gw.tileSize;
 
                     Rectangle mapTileRect = new Rectangle(
-                            mapTileX + currentTile.hitRect.x,
-                            mapTileY + currentTile.hitRect.y,
+                            mapPos.getX() + currentTile.hitRect.x,
+                            mapPos.getY() + currentTile.hitRect.y,
                             currentTile.hitRect.width,
                             currentTile.hitRect.height
                     );
 
                     if (mapTileRect.intersects(objectRect)) {
+                        if (currentTile.getTileType() == Tile.TileType.HAS_POWERUP) {
+                            // get tile's powerup
+                            if (destroyingTiles.containsKey(mapPos)) {
+                                DestructibleTile powerupTile = destroyingTiles.get(mapPos);
+                                powerupTile.potentialPowerUp.applyPowerUp(gw.player);
+                                destroyingTiles.remove(mapPos);
+                                charMap[row][col] = ' ';
+                            }
+                            return false; // allow movement to this powerup tile.
+                        }
                         return true;
                     }
                 }
@@ -103,28 +111,25 @@ public class TileManager {
     public Tile getTileAt(Position position) {
         int tileRow = position.getY() / gw.tileSize;
         int tileCol = position.getX() / gw.tileSize;
+
+        if (destroyingTiles.containsKey(position)) {
+            return destroyingTiles.get(position);
+        }
+
         char tileChar = charMap[tileRow][tileCol];
         // instantiate a new instance of Tile instead of using a reference to the same instance.
-        Tile result;
-        switch (tileChar) {
-            case '#', 'x':
-                result = new IndestructibleTile(gw, textureManager);
-                break;
-            case '*':
-                result = new DestructibleTile(new NoPowerUp(PowerUp.PowerUpType.NULL), gw, textureManager);
-                break;
-            case 'b':
-                result = new DestructibleTile(new BombUpPowerUp(PowerUp.PowerUpType.BOMB_UP), gw, textureManager);
-                break;
-            case 'f':
-                result = new DestructibleTile(new FireUpPowerUp(PowerUp.PowerUpType.FIRE_UP), gw, textureManager);
-                break;
-            case 's':
-                result = new DestructibleTile(new SpeedPowerUp(PowerUp.PowerUpType.SPEED_UP), gw, textureManager);
-                break;
-            default:
-                result = tiles.get(tileChar);
-        }
+        Tile result = switch (tileChar) {
+            case '#', 'x' -> new IndestructibleTile(gw, textureManager);
+            case '*' ->
+                    new DestructibleTile(new NoPowerUp(PowerUp.PowerUpType.NULL), gw, textureManager);
+            case 'b' ->
+                    new DestructibleTile(new BombUpPowerUp(PowerUp.PowerUpType.BOMB_UP), gw, textureManager);
+            case 'f' ->
+                    new DestructibleTile(new FireUpPowerUp(PowerUp.PowerUpType.FIRE_UP), gw, textureManager);
+            case 's' ->
+                    new DestructibleTile(new SpeedPowerUp(PowerUp.PowerUpType.SPEED_UP), gw, textureManager);
+            default -> tiles.get(tileChar);
+        };
 
         if (result != null) {
             result.setPosition(tilePositions[tileRow][tileCol]);
@@ -132,13 +137,10 @@ public class TileManager {
         return result;
     }
 
-    // used when player picks up Powerup or bomb has done explosion.
+    // used when the player picks up Powerup or bomb has done explosion.
     // D.Tile destroyed() -> isDestroyed = true && type changes to PASSABLE if it has no powerup
     // if (player collides DTile && DTile.isDestroyed) destroyTile(Tile.getPosition)
     public void destroyTile(Position tilePosition) {
-//        int tileRow = tilePosition.getY() / gw.tileSize;
-//        int tileCol = tilePosition.getX() / gw.tileSize;
-
         Tile destroyedTile = getTileAt(tilePosition);
         if (destroyedTile.getTileType() == Tile.TileType.DESTRUCTIBLE) {
             DestructibleTile tempDestructible = (DestructibleTile) destroyedTile;
@@ -196,8 +198,13 @@ public class TileManager {
 
                         // If animation is complete, remove it and update charMap
                         if (!destroyingTile.currentAnimation.isRunning()) {
-                            destroyingTiles.remove(tilePos);
-                            charMap[i][j] = ' ';
+                            if (destroyingTile.getTileType() == Tile.TileType.PASSABLE) {
+                                charMap[i][j] = ' ';
+                                destroyingTiles.remove(tilePos);
+                            } else {
+                                // powerup tile remains until player picks it up
+                                destroyingTile.setAnimations("displayPowerup");
+                            }
                         }
                         continue;
                     }
