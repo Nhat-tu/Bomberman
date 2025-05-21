@@ -39,6 +39,9 @@ public class DestructibleTile extends Tile {
         if (this.currentAnimation != null) {
             this.currentAnimation.resetAndStart();
         }
+        if (this.currentAnimation != null) {
+            this.currentAnimation.resetAndStart();
+        }
         /* TODO */
     }
 
