@@ -2,11 +2,13 @@ package com.uet.oop.object;
 
 import com.uet.oop.core.GameWindow;
 import com.uet.oop.core.KeyboardHandler;
+import com.uet.oop.map.TileManager;
 import com.uet.oop.object.powerups.PowerUp;
 import com.uet.oop.rendering.Animation;
 import com.uet.oop.rendering.TextureManager;
 
 import java.awt.Color;
+import java.awt.Rectangle;
 import java.awt.Graphics2D;
 import java.awt.event.KeyEvent;
 import java.awt.image.BufferedImage;
@@ -19,17 +21,19 @@ public class Player extends GameEntity {
     private int bombs;
     private int explosionRadius;
     private int invulnerabilityTimer;
+    public List<Bomb> currentBombs;
     public List<PowerUp> currentPowerups;
 
     GameWindow gw;
     KeyboardHandler keyH;
     private TextureManager textureManager;
 
-    public Player(GameWindow gw, KeyboardHandler keyH, TextureManager textureManager) {
+    public Player(GameWindow gw, KeyboardHandler keyH, TextureManager textureManager) /*, TileManager tileManager)*/ {
         setDefaultValues();
         this.gw = gw;
         this.keyH = keyH;
         this.textureManager = textureManager;
+        this.currentBombs = new ArrayList<>(1);
         this.currentPowerups = new ArrayList<>();
         this.animations = new HashMap<>();
         this.screenPosition = new Position(gw.screenWidth / 2 - gw.tileSize / 2, gw.screenHeight / 2 - gw.tileSize / 2); // centered
@@ -38,12 +42,18 @@ public class Player extends GameEntity {
 
     public void setDefaultValues() {
         this.mapPosition = new Position(48,48);
-        this.movementSpeed = 7;
+        this.movementSpeed = 5;
         this.hitPoints = 2;
         this.bombs = 1;
         this.explosionRadius = 1;
         this.invulnerabilityTimer = 3000; // ms
         this.currentAnimation = null;
+        this.hitRect = new Rectangle (
+                8,
+                8,
+                30,
+                31
+        );
     }
 
     public void setupAnimation() {
@@ -59,7 +69,7 @@ public class Player extends GameEntity {
         moveLeftFrames[2] = textureManager.getTexture("player_left_2.png");
         moveLeftFrames[3] = textureManager.getTexture("player_left.png");
 
-        Animation moveLeftAnimation = new Animation(moveLeftFrames, 200, true);
+        Animation moveLeftAnimation = new Animation(moveLeftFrames, 150, true);
         animations.put("moveLeftAnimation", moveLeftAnimation);
 
         // move right anim
@@ -70,7 +80,7 @@ public class Player extends GameEntity {
         moveRightFrames[2] = textureManager.getTexture("player_right_2.png");
         moveRightFrames[3] = textureManager.getTexture("player_right.png");
 
-        Animation moveRightAnimation = new Animation(moveRightFrames, 200, true);
+        Animation moveRightAnimation = new Animation(moveRightFrames, 150, true);
         animations.put("moveRightAnimation", moveRightAnimation);
 
         // move up anim
@@ -81,7 +91,7 @@ public class Player extends GameEntity {
         moveUpFrames[2] = textureManager.getTexture("player_up_2.png");
         moveUpFrames[3] = textureManager.getTexture("player_up.png");
 
-        Animation moveUpAnimation = new Animation(moveUpFrames, 200, true);
+        Animation moveUpAnimation = new Animation(moveUpFrames, 150, true);
         animations.put("moveUpAnimation", moveUpAnimation);
 
         // move down anim
@@ -92,7 +102,7 @@ public class Player extends GameEntity {
         moveDownFrames[2] = textureManager.getTexture("player_down_2.png");
         moveDownFrames[3] = textureManager.getTexture("player_down.png");
 
-        Animation moveDownAnimation = new Animation(moveDownFrames, 200, true);
+        Animation moveDownAnimation = new Animation(moveDownFrames, 150, true);
         animations.put("moveDownAnimation", moveDownAnimation);
 //-------------------------------------
         setAnimation("moveRightAnimation"); // default
@@ -125,22 +135,65 @@ public class Player extends GameEntity {
 
     @Override
     public void movement() {
+        int newX = mapPosition.getX();
+        int newY = mapPosition.getY();
+
         if (keyH.isKeyPressed(KeyEvent.VK_W)) {
             setAnimation("moveUpAnimation");
-            mapPosition.setY(mapPosition.getY() - movementSpeed);
+            newY -= movementSpeed;
             currentAnimation.update();
         } else if (keyH.isKeyPressed(KeyEvent.VK_S)) {
             setAnimation("moveDownAnimation");
-            mapPosition.setY(mapPosition.getY() + movementSpeed);
+            newY += movementSpeed;
             currentAnimation.update();
         } else if (keyH.isKeyPressed(KeyEvent.VK_A)) {
             setAnimation("moveLeftAnimation");
-            mapPosition.setX(mapPosition.getX() - movementSpeed);
+            newX -= movementSpeed;
             currentAnimation.update();
         } else if (keyH.isKeyPressed(KeyEvent.VK_D)) {
             setAnimation("moveRightAnimation");
-            mapPosition.setX(mapPosition.getX() + movementSpeed);
+            newX += movementSpeed;
             currentAnimation.update();
+        }
+
+        // Add boundary checks
+        newX = Math.max(0, Math.min(newX, gw.mapWidth - gw.tileSize));
+        newY = Math.max(0, Math.min(newY, gw.mapHeight - gw.tileSize));
+
+
+        Rectangle playerMapRect = new Rectangle(
+                newX + hitRect.x,
+                newY + hitRect.y,
+                hitRect.width,
+                hitRect.height
+        );
+
+        if (!gw.tileManager.CheckCollision(playerMapRect)) {
+            setMapPosition(new Position(newX, newY));
+        }
+
+    }
+
+    public void placeBombs(List<Bomb> currentBombs, TileManager tileManager) {
+        if (bombs > currentBombs.size()) {
+            return;
+        }
+
+
+    }
+
+    @Override
+    public void takeDamage() {
+        hitPoints -= 1;
+        die();
+    }
+
+    @Override
+    public void die() { //
+        /* runs death animation */
+        /* reset player state, position */
+        if (hitPoints == 0) {
+            /* ENDGAME */
         }
     }
 
@@ -174,30 +227,11 @@ public class Player extends GameEntity {
                 y = gw.screenHeight - (gw.mapHeight - getMapPosition().getY());
             }
 
-            g.drawImage(frameToRender, x, y, gw.tileSize, gw.tileSize,null);
+            g.drawImage(frameToRender, x, y, gw.tileSize - 6, gw.tileSize - 6,null);
         } else { // if fails then
             g.setColor(Color.RED);
             g.fillRect(screenPosition.getX(), screenPosition.getY(), gw.tileSize, gw.tileSize);
         }
-    }
-
-    @Override
-    public void takeDamage() {
-        hitPoints -= 1;
-        die();
-    }
-
-    @Override
-    public void die() { //
-        /* runs death animation */
-        /* reset player state, position */
-        if (hitPoints == 0) {
-            /* ENDGAME */
-        }
-    }
-
-    public void placeBombs() {
-        /* TODO */
     }
 
     public Position getScreenPosition() {
