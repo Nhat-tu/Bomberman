@@ -45,7 +45,7 @@ public class Player extends GameEntity {
         this.mapPosition = new Position(48,48);
         this.movementSpeed = 4;
         this.hitPoints = 2;
-        this.bombs = 1;
+        this.bombs = 2;
         this.explosionRadius = 2;
         this.invulnerabilityTimer = 3000; // ms
         this.currentAnimation = null;
