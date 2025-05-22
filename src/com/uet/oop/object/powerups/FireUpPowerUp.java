@@ -13,6 +13,7 @@ public class FireUpPowerUp extends PermanentPowerUp {
 
         if (currentExplosionRadius < 4) {
             player.setExplosionRadius(currentExplosionRadius + 1);
+            System.out.println("Player's explosion radius increased. Current explosion radius: " + player.getExplosionRadius());
         }
     }
 
