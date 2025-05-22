@@ -20,7 +20,6 @@ import java.util.List;
 public class Player extends GameEntity {
     private Position screenPosition;
     private int bombs;
-    private final int maxBombs = 3;
     private int explosionRadius;
     private int invulnerabilityTimer;
     public List<Bomb> currentBombs;

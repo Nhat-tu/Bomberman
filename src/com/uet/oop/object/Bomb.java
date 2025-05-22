@@ -235,11 +235,6 @@ public class Bomb implements Renderable {
                 Position tilePos = new Position(newX, newY);
                 Tile tile = gw.tileManager.getTileAt(tilePos);
                 if (tile != null) {
-                    // add explosion area
-                    Rectangle explosionArea = new Rectangle(newX, newY, gw.tileSize, gw.tileSize);
-                    explosionAreas.add(explosionArea);
-                    setUpFireAnimation(explosionArea, dir, rad == explosionRadius);
-
                     // handle types of tile
                     if (tile.getTileType() == Tile.TileType.INDESTRUCTIBLE) {
                         break;
@@ -248,6 +243,11 @@ public class Bomb implements Renderable {
                         destroyedTilePositions.add(tilePos);
                         break;
                     }
+
+                    // add explosion area
+                    Rectangle explosionArea = new Rectangle(newX, newY, gw.tileSize, gw.tileSize);
+                    explosionAreas.add(explosionArea);
+                    setUpFireAnimation(explosionArea, dir, rad == explosionRadius);
                 }
             }
         }
