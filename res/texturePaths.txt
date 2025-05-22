@@ -8,7 +8,7 @@
 /sprites/bomb.png
 /sprites/bomb_1.png
 /sprites/bomb_2.png
-/sprites/bomb_exploded.png
+/sprites/bomb_exploded_0.png
 /sprites/bomb_exploded_1.png
 /sprites/bomb_exploded_2.png
 /sprites/brick.png
@@ -28,9 +28,9 @@
 /sprites/explosion_horizontal_0.png
 /sprites/explosion_horizontal_1.png
 /sprites/explosion_horizontal_2.png
-/sprites/explosion_horizontal_left_last2.png
 /sprites/explosion_horizontal_left_last_0.png
 /sprites/explosion_horizontal_left_last_1.png
+/sprites/explosion_horizontal_left_last_2.png
 /sprites/explosion_horizontal_right_last_0.png
 /sprites/explosion_horizontal_right_last_1.png
 /sprites/explosion_horizontal_right_last_2.png

@@ -32,7 +32,7 @@ public class GameWindow extends JPanel implements Runnable {
     public final int mapHeight = mapRow * tileSize;
 
     KeyboardHandler keyHandler;
-    RenderManager renderManager;
+    public RenderManager renderManager;
     TextureManager textureManager;
     public TileManager tileManager;
     public Player player;
@@ -107,8 +107,5 @@ public class GameWindow extends JPanel implements Runnable {
         //add more here
         renderManager.setGraphicContext2d(g2d);
         renderManager.render();
-
-        // renderManager.clearRenderables();
-        // g2d.dispose();
     }
 }
