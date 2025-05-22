@@ -26,6 +26,7 @@ public class Bomb implements Renderable {
     private boolean exploded;
     private boolean explosionComplete;
     private List<Rectangle> explosionAreas;
+    private Map<Rectangle, Animation> explosionAnimations;
     private List<Position> destroyedTilePositions;
     private static final int EXPLOSION_DURATION = 1000;
     private long explosionStartTime;
@@ -36,13 +37,14 @@ public class Bomb implements Renderable {
     public Bomb(Position position, int explosionRadius, GameEntity ownerEntity, GameWindow gw, TextureManager textureManager) {
         this.mapPosition = position;
         this.plantTime = System.currentTimeMillis();
-        this.fuseTime = 2100;
+        this.fuseTime = 3000;
         this.explosionRadius = explosionRadius;
         this.ownerEntity = ownerEntity;
         this.exploded = false;
         this.explosionComplete = false;
         this.animations = new HashMap<>();
         this.explosionAreas = new ArrayList<>();
+        this.explosionAnimations = new HashMap<>();
         this.destroyedTilePositions = new ArrayList<>();
 
         this.gw = gw;
@@ -63,17 +65,9 @@ public class Bomb implements Renderable {
         exploding[2] = textureManager.getTexture("bomb_2.png");
         exploding[3] = textureManager.getTexture("bomb_1.png");
 
-        Animation explodingAnimation = new Animation(exploding, 300, true);
+        Animation explodingAnimation = new Animation(exploding, 250, true);
         animations.put("explodingAnimation", explodingAnimation);
 
-        // exploded
-        BufferedImage[] exploded = new BufferedImage[explosionFrames];
-        exploded[0] = textureManager.getTexture("bomb_exploded_0.png");
-        exploded[1] = textureManager.getTexture("bomb_exploded_1.png");
-        exploded[2] = textureManager.getTexture("bomb_exploded_2.png");
-
-        Animation explodedAnimation = new Animation(exploded, 200, false);
-        animations.put("explodedAnimation", explodedAnimation);
 //-------------------------------------
         setAnimation("explodingAnimation"); // default
     }
@@ -95,6 +89,56 @@ public class Bomb implements Renderable {
             System.err.println("Couldn't find bomb's animation: " + animationName);
             currentAnimation = null;
         }
+    }
+
+    private void setUpFireAnimation(Rectangle area, int direction, boolean isLastArea) {
+        BufferedImage[] fireFrames = new BufferedImage[3];
+        String prefix = "";
+
+        if (area.equals(explosionAreas.getFirst())) {
+            prefix = "bomb_exploded_";
+        } else {
+            switch (direction) {
+                case 0: // right
+                    if (isLastArea) {
+                        prefix = "explosion_horizontal_right_last_";
+                    } else {
+                        prefix = "explosion_horizontal_";
+                    }
+                    break;
+                case 1: // left
+                    if (isLastArea) {
+                        prefix = "explosion_horizontal_left_last_";
+                    } else {
+                        prefix = "explosion_horizontal_";
+                    }
+                    break;
+                case 2: // down
+                    if (isLastArea) {
+                        prefix = "explosion_vertical_down_last_";
+                    } else {
+                        prefix = "explosion_vertical_";
+                    }
+                    break;
+                case 3: // up
+                    if (isLastArea) {
+                        prefix = "explosion_vertical_top_last_";
+                    } else {
+                        prefix = "explosion_vertical_";
+                    }
+                    break;
+                default: // center
+                    prefix = "bomb_exploded_";
+            }
+        }
+
+        fireFrames[0] = textureManager.getTexture(prefix + "0.png");
+        fireFrames[1] = textureManager.getTexture(prefix + "1.png");
+        fireFrames[2] = textureManager.getTexture(prefix + "2.png");
+
+        Animation fireAnimation = new Animation(fireFrames, 175, false);
+        fireAnimation.resetAndStart();
+        explosionAnimations.put(area, fireAnimation);
     }
 
     public void update() {
@@ -124,7 +168,6 @@ public class Bomb implements Renderable {
         explosionStartTime = System.currentTimeMillis();
         createExplosionArea();
         checkDamage();
-        setAnimation("explodedAnimation");
         checkChainExplosion();
     }
 
@@ -165,6 +208,7 @@ public class Bomb implements Renderable {
             }
         }
     }
+
     public void createExplosionArea() {
         explosionAreas.clear();
 
@@ -175,6 +219,7 @@ public class Bomb implements Renderable {
                 gw.tileSize
         );
         explosionAreas.add(center);
+        setUpFireAnimation(center, -1, true);
 
         int[] dx = {1, -1, 0, 0}; // right, left, down. up
         int[] dy = {0, 0, 1, -1};
@@ -194,6 +239,7 @@ public class Bomb implements Renderable {
                     // add explosion area
                     Rectangle explosionArea = new Rectangle(newX, newY, gw.tileSize, gw.tileSize);
                     explosionAreas.add(explosionArea);
+                    setUpFireAnimation(explosionArea, dir, rad == explosionRadius);
 
                     // handle types of tile
                     if (tile.getTileType() == Tile.TileType.INDESTRUCTIBLE) {
@@ -244,25 +290,30 @@ public class Bomb implements Renderable {
 
             // draw explosion area
             if (exploded && !explosionComplete) {
-                g.setColor(new Color(255, 140, 0, 200));
                 for (Rectangle area : explosionAreas) {
-                    int areaScreenX = area.x - (gw.player.getMapPosition().getX() - gw.player.getScreenPosition().getX());
-                    int areaScreenY = area.y - (gw.player.getMapPosition().getY() - gw.player.getScreenPosition().getY());
+                    Animation fireAnim = explosionAnimations.get(area);
+                    if (fireAnim != null) {
+                        fireAnim.update();
+                        BufferedImage currentFireFrame = fireAnim.getCurrentFrame();
 
-                    if (gw.player.getScreenPosition().getX() > gw.player.getMapPosition().getX()) {
-                        areaScreenX = area.x;
-                    }
-                    if (gw.player.getScreenPosition().getY() > gw.player.getMapPosition().getY()) {
-                        areaScreenY = area.y;
-                    }
-                    if (rightOffset > gw.mapWidth - gw.player.getMapPosition().getX()) {
-                        areaScreenX = gw.screenWidth - (gw.mapWidth - area.x);
-                    }
-                    if (bottomOffset > gw.mapHeight - gw.player.getMapPosition().getY()) {
-                        areaScreenY = gw.screenHeight - (gw.mapHeight - area.y);
-                    }
+                        int areaScreenX = area.x - (gw.player.getMapPosition().getX() - gw.player.getScreenPosition().getX());
+                        int areaScreenY = area.y - (gw.player.getMapPosition().getY() - gw.player.getScreenPosition().getY());
 
-                    g.fillRect(areaScreenX, areaScreenY, area.width, area.height);
+                        if (gw.player.getScreenPosition().getX() > gw.player.getMapPosition().getX()) {
+                            areaScreenX = area.x;
+                        }
+                        if (gw.player.getScreenPosition().getY() > gw.player.getMapPosition().getY()) {
+                            areaScreenY = area.y;
+                        }
+                        if (rightOffset > gw.mapWidth - gw.player.getMapPosition().getX()) {
+                            areaScreenX = gw.screenWidth - (gw.mapWidth - area.x);
+                        }
+                        if (bottomOffset > gw.mapHeight - gw.player.getMapPosition().getY()) {
+                            areaScreenY = gw.screenHeight - (gw.mapHeight - area.y);
+                        }
+
+                        g.drawImage(currentFireFrame, areaScreenX, areaScreenY, gw.tileSize, gw.tileSize,null);
+                    }
                 }
             }
         } else { // if fails then

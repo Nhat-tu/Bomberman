@@ -107,8 +107,5 @@ public class GameWindow extends JPanel implements Runnable {
         //add more here
         renderManager.setGraphicContext2d(g2d);
         renderManager.render();
-
-        // renderManager.clearRenderables();
-        // g2d.dispose();
     }
 }

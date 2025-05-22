@@ -45,14 +45,14 @@ public class Player extends GameEntity {
         this.mapPosition = new Position(48,48);
         this.movementSpeed = 4;
         this.hitPoints = 2;
-        this.bombs = 1;
+        this.bombs = 2;
         this.explosionRadius = 2;
         this.invulnerabilityTimer = 3000; // ms
         this.currentAnimation = null;
         this.hitRect = new Rectangle (
                 0,
                 0,
-                40,
+                38,
                 40
         );
     }
@@ -205,12 +205,12 @@ public class Player extends GameEntity {
         Bomb newBomb = new Bomb(bombPosition, explosionRadius, this, gw, textureManager);
         currentBombs.add(newBomb);
         gw.renderManager.addRenderable(newBomb);
-
     }
 
     @Override
     public void takeDamage() {
         hitPoints -= 1;
+        System.out.println("Player hit!, hitPoints left: " + hitPoints);
         die();
     }
 
