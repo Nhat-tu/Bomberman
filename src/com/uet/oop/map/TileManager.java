@@ -145,7 +145,8 @@ public class TileManager {
     // if (player collides DTile && DTile.isDestroyed) destroyTile(Tile.getPosition)
     public void destroyTile(Position tilePosition) {
         Tile destroyedTile = getTileAt(tilePosition);
-        if (destroyedTile.getTileType() == Tile.TileType.DESTRUCTIBLE) {
+        if (destroyedTile.getTileType() == Tile.TileType.DESTRUCTIBLE ||
+            destroyedTile.getTileType() == Tile.TileType.HAS_POWERUP) {
             DestructibleTile tempDestructible = (DestructibleTile) destroyedTile;
             tempDestructible.destroyed();
             destroyingTiles.put(tilePosition, tempDestructible);

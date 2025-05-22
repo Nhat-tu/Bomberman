@@ -9,7 +9,11 @@ public class FireUpPowerUp extends PermanentPowerUp {
 
     @Override
     public void applyPowerup(Player player) {
+        int currentExplosionRadius = player.getExplosionRadius();
 
+        if (currentExplosionRadius < 4) {
+            player.setExplosionRadius(currentExplosionRadius + 1);
+        }
     }
 
 }

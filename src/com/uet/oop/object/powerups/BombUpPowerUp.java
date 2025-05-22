@@ -8,9 +8,11 @@ public class BombUpPowerUp extends PermanentPowerUp {
     }
 
     public void applyPowerup(Player player) {
-        if (player.currentBombs.size() < 3) {
+        if (player.currentBombs.size() < player.getMaxBombs()) {
             int currentBomb = player.getMaxBombs();
-            player.setMaxBombs(currentBomb + 1);
+            if (currentBomb < 3) {
+                player.setMaxBombs(currentBomb + 1);
+            }
         }
     }
 }

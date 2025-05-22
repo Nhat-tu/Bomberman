@@ -47,4 +47,5 @@ public abstract class PowerUp {
         player.currentPowerups.add(this);
         applyPowerup(player);
     }
+
 }

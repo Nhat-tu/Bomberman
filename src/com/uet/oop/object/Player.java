@@ -2,8 +2,8 @@ package com.uet.oop.object;
 
 import com.uet.oop.core.GameWindow;
 import com.uet.oop.core.KeyboardHandler;
-import com.uet.oop.map.TileManager;
 import com.uet.oop.object.powerups.PowerUp;
+import com.uet.oop.object.powerups.TemporaryPowerUp;
 import com.uet.oop.rendering.Animation;
 import com.uet.oop.rendering.TextureManager;
 
@@ -14,6 +14,7 @@ import java.awt.event.KeyEvent;
 import java.awt.image.BufferedImage;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.List;
 
 public class Player extends GameEntity {
@@ -29,8 +30,12 @@ public class Player extends GameEntity {
     KeyboardHandler keyH;
     private TextureManager textureManager;
 
+    private boolean messageShown = false;
+    private boolean isAlive;
+
     public Player(GameWindow gw, KeyboardHandler keyH, TextureManager textureManager) /*, TileManager tileManager)*/ {
         setDefaultValues();
+        this.currentAnimation = null;
         this.gw = gw;
         this.keyH = keyH;
         this.textureManager = textureManager;
@@ -44,22 +49,22 @@ public class Player extends GameEntity {
     public void setDefaultValues() {
         this.mapPosition = new Position(48,48);
         this.movementSpeed = 4;
-        this.hitPoints = 2;
-        this.bombs = 2;
-        this.explosionRadius = 2;
+        this.hitPoints = 1;
+        this.bombs = 1;
+        this.explosionRadius = 1;
         this.invulnerabilityTimer = 3000; // ms
-        this.currentAnimation = null;
         this.hitRect = new Rectangle (
                 0,
                 0,
                 38,
                 40
         );
+        this.isAlive = true;
     }
 
     public void setupAnimation() {
         int framesPerMoveAnimation = 4;
-        int framesPerDeathAnimation = 6;
+        int framesPerDeathAnimation = 7;
 
 // ------------------------------------
         // move left anim
@@ -105,6 +110,16 @@ public class Player extends GameEntity {
 
         Animation moveDownAnimation = new Animation(moveDownFrames, 150, true);
         animations.put("moveDownAnimation", moveDownAnimation);
+
+        // death
+        BufferedImage[] deathFrames = new BufferedImage[framesPerDeathAnimation];
+        // test prefix method
+        String prefix = "player_dead_";
+        for (int i = 0; i < framesPerDeathAnimation - 1; i++) {
+            deathFrames[i] = textureManager.getTexture(prefix + i + ".png");
+        }
+        Animation deathAnimation = new Animation(deathFrames, 300, false);
+        animations.put("deathAnimation", deathAnimation);
 //-------------------------------------
         setAnimation("moveRightAnimation"); // default
     }
@@ -129,8 +144,6 @@ public class Player extends GameEntity {
     }
 
     public void update() {
-        movement();
-
         // update and remove done exploded bomb
         currentBombs.removeIf(bomb -> {
             bomb.update();
@@ -141,34 +154,57 @@ public class Player extends GameEntity {
             return false;
         });
 
-//        takeDamage();
-        die();
+        if (isAlive) {
+            movement();
+            updatePowerup();
+        } else {
+            currentAnimation.update();
+            if (!currentAnimation.isRunning()) {
+                setDefaultValues();
+                setAnimation("moveRightAnimation");
+            }
+        }
     }
 
     @Override
     public void movement() {
         int newX = mapPosition.getX();
         int newY = mapPosition.getY();
+// Add at the beginning of movement()
+        final double DIAGONAL_FACTOR = 0.707; // approximately 1/√2
 
-        if (keyH.isKeyPressed(KeyEvent.VK_W)) {
-            setAnimation("moveUpAnimation");
-            newY -= movementSpeed;
-            currentAnimation.update();
-        } else if (keyH.isKeyPressed(KeyEvent.VK_S)) {
-            setAnimation("moveDownAnimation");
-            newY += movementSpeed;
-            currentAnimation.update();
-        } else if (keyH.isKeyPressed(KeyEvent.VK_A)) {
-            setAnimation("moveLeftAnimation");
-            newX -= movementSpeed;
-            currentAnimation.update();
-        } else if (keyH.isKeyPressed(KeyEvent.VK_D)) {
-            setAnimation("moveRightAnimation");
-            newX += movementSpeed;
-            currentAnimation.update();
-        } else if (keyH.isKeyPressed(KeyEvent.VK_SPACE)) {
-            placeBombs();
+// Then modify the movement speed when moving diagonally
+        if (keyH.isKeyPressed(KeyEvent.VK_W) && (keyH.isKeyPressed(KeyEvent.VK_A) || keyH.isKeyPressed(KeyEvent.VK_D)) ||
+                keyH.isKeyPressed(KeyEvent.VK_S) && (keyH.isKeyPressed(KeyEvent.VK_A) || keyH.isKeyPressed(KeyEvent.VK_D))) {
+            int diagonalSpeed = (int)(movementSpeed * DIAGONAL_FACTOR);
+            // Use diagonalSpeed instead of movementSpeed for both X and Y
+            if (keyH.isKeyPressed(KeyEvent.VK_W)) newY -= diagonalSpeed;
+            if (keyH.isKeyPressed(KeyEvent.VK_S)) newY += diagonalSpeed;
+            if (keyH.isKeyPressed(KeyEvent.VK_A)) newX -= diagonalSpeed;
+            if (keyH.isKeyPressed(KeyEvent.VK_D)) newX += diagonalSpeed;
+        } else {
+
+            if (keyH.isKeyPressed(KeyEvent.VK_W)) {
+                setAnimation("moveUpAnimation");
+                newY -= movementSpeed;
+                currentAnimation.update();
+            } if (keyH.isKeyPressed(KeyEvent.VK_S)) {
+                setAnimation("moveDownAnimation");
+                newY += movementSpeed;
+                currentAnimation.update();
+            } if (keyH.isKeyPressed(KeyEvent.VK_A)) {
+                setAnimation("moveLeftAnimation");
+                newX -= movementSpeed;
+                currentAnimation.update();
+            } if (keyH.isKeyPressed(KeyEvent.VK_D)) {
+                setAnimation("moveRightAnimation");
+                newX += movementSpeed;
+                currentAnimation.update();
+            } if (keyH.isKeyPressed(KeyEvent.VK_SPACE)) {
+                placeBombs();
+            }
         }
+
 
         // Add boundary checks
         newX = Math.max(0, Math.min(newX, gw.mapWidth - gw.tileSize));
@@ -216,10 +252,27 @@ public class Player extends GameEntity {
 
     @Override
     public void die() { //
-        /* runs death animation */
+        isAlive = false;
+        setAnimation("deathAnimation");
         /* reset player state, position */
+
         if (hitPoints == 0) {
-            /* ENDGAME */
+            if (!messageShown) {
+                System.out.println("GAME OVER!");
+                messageShown = true;
+            }
+        }
+    }
+
+    public void updatePowerup() {
+        Iterator<PowerUp> iterator = currentPowerups.iterator();
+        while (iterator.hasNext()) {
+            PowerUp powerUp = iterator.next();
+            if (powerUp instanceof TemporaryPowerUp tempPowerUp) {
+                if (System.currentTimeMillis() - tempPowerUp.getStartTime() > tempPowerUp.getDuration()) {
+                    tempPowerUp.removePowerUp(this, iterator);
+                }
+            }
         }
     }
 
@@ -255,7 +308,7 @@ public class Player extends GameEntity {
 
             g.drawImage(frameToRender, x, y, gw.tileSize - 6, gw.tileSize - 6,null);
         } else { // if fails then
-            g.setColor(Color.RED);
+            g.setColor(new Color(80, 160, 0));
             g.fillRect(screenPosition.getX(), screenPosition.getY(), gw.tileSize, gw.tileSize);
         }
     }
@@ -268,7 +321,16 @@ public class Player extends GameEntity {
         return bombs;
     }
 
+    public int getExplosionRadius() {
+        return explosionRadius;
+    }
+
     public void setMaxBombs(int maxBomb) {
         this.bombs = maxBomb;
     }
+
+    public void setExplosionRadius(int explosionRadius) {
+        this.explosionRadius = explosionRadius;
+    }
+
 }

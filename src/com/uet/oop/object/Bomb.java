@@ -94,7 +94,7 @@ public class Bomb implements Renderable {
         BufferedImage[] fireFrames = new BufferedImage[3];
         String prefix;
 
-        if (area.equals(explosionAreas.getFirst())) {
+        if (area.equals(explosionAreas.getFirst())) { // double check for center
             prefix = "bomb_exploded_";
         } else {
             switch (direction) {
@@ -243,7 +243,8 @@ public class Bomb implements Renderable {
                     // handle types of tile
                     if (tile.getTileType() == Tile.TileType.INDESTRUCTIBLE) {
                         break;
-                    } else if (tile.getTileType() == Tile.TileType.DESTRUCTIBLE) {
+                    } else if (tile.getTileType() == Tile.TileType.DESTRUCTIBLE ||
+                               tile.getTileType() == Tile.TileType.HAS_POWERUP) {
                         destroyedTilePositions.add(tilePos);
                         break;
                     }
