@@ -30,7 +30,8 @@ java {
 jar {
     manifest {
         attributes(
-                "Main-Class": application.mainClass
+            "Main-Class": application.mainClass
         )
     }
+    archiveBaseName = "Bomberman"
 }
