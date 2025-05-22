@@ -44,7 +44,7 @@ public class TextureManager {
 
     public void bulkLoadTexture() {
         List<String> filePaths;
-        filePaths = TextureFileReader.readFromFile("res/texturePaths.txt"); // this already ignores blank lines.
+        filePaths = TextureFileReader.readFromFile("texturePaths.txt"); // this already ignores blank lines.
 
         List<String> fileNames = new ArrayList<>();
         for (String pathString : filePaths) {
