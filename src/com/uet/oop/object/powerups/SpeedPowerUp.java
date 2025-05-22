@@ -17,6 +17,7 @@ public class SpeedPowerUp extends TemporaryPowerUp{
         int currentSpeed = player.getMovementSpeed();
         if (currentSpeed < 7) {
             player.setMovementSpeed(currentSpeed + speedIncrease);
+            System.out.println("Player's movement speed increased. Current speed: " + player.getMovementSpeed());
         }
     }
 
@@ -24,5 +25,6 @@ public class SpeedPowerUp extends TemporaryPowerUp{
     public void removePowerUp(Player player, Iterator<PowerUp> iterator) {
         player.setMovementSpeed(player.getMovementSpeed() - speedIncrease);
         iterator.remove();
+        System.out.println("Player's movement speed is restored to default. Current speed: " + player.getMovementSpeed());
     }
 }
