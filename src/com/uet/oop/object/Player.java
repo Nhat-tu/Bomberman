@@ -45,7 +45,7 @@ public class Player extends GameEntity {
         this.mapPosition = new Position(48,48);
         this.movementSpeed = 4;
         this.hitPoints = 2;
-        this.bombs = 2;
+        this.bombs = 1;
         this.explosionRadius = 2;
         this.invulnerabilityTimer = 3000; // ms
         this.currentAnimation = null;
@@ -192,8 +192,8 @@ public class Player extends GameEntity {
         if (currentBombs.size() >= bombs) {
             return;
         }
-        int bombX = (getMapPosition().getX() / gw.tileSize ) * gw.tileSize;
-        int bombY = (getMapPosition().getY() / gw.tileSize ) * gw.tileSize;
+        int bombX = (int) (Math.round( (double)getMapPosition().getX() / gw.tileSize ) * gw.tileSize);
+        int bombY = (int) (Math.round( (double)getMapPosition().getY() / gw.tileSize ) * gw.tileSize);
         Position bombPosition = new Position(bombX, bombY);
 
         for (Bomb bomb : currentBombs) {
@@ -262,5 +262,13 @@ public class Player extends GameEntity {
 
     public Position getScreenPosition() {
         return screenPosition;
+    }
+
+    public int getMaxBombs() {
+        return bombs;
+    }
+
+    public void setMaxBombs(int maxBomb) {
+        this.bombs = maxBomb;
     }
 }

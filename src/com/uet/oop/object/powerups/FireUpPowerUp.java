@@ -6,8 +6,10 @@ public class FireUpPowerUp extends PermanentPowerUp {
     public FireUpPowerUp(PowerUpType type) {
         super(type);
     }
+
     @Override
-    public void applyPowerUp(Player player) {
+    public void applyPowerup(Player player) {
 
     }
+
 }

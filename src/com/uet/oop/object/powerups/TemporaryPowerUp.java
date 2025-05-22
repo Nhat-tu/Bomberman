@@ -20,9 +20,6 @@ public abstract class TemporaryPowerUp extends PowerUp {
         this.duration = duration;
     }
 
-    @Override
-    public abstract void applyPowerUp(Player player);
-
     public abstract void removePowerUp(Player player);
 
 }

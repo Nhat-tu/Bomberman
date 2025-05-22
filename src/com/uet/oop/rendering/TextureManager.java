@@ -1,14 +1,12 @@
 package com.uet.oop.rendering;
 
 import java.awt.image.BufferedImage;
+import java.io.InputStream;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.io.IOException;
 import javax.imageio.ImageIO;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.HashMap;
-import java.util.Map;
+import java.util.*;
 
 // no more <object>.loadTexture.
 public class TextureManager {
@@ -24,8 +22,13 @@ public class TextureManager {
             return textureMap.get(name);
         }
         try {
-            BufferedImage texture = ImageIO.read(getClass().getResourceAsStream(texturePath));
-            if (texture != null) {
+            InputStream is = getClass().getResourceAsStream(texturePath);
+            if (is == null) {
+                throw new IOException("Cannot fetch from " + "\u001B[32m" + texturePath + "\u001B[0m" + " (resource not found).");
+            }
+            BufferedImage texture = ImageIO.read(is);
+
+            if (texture != null && !name.equals("null!")) {
                 textureMap.put(name, texture);
                 System.out.printf("Texture: %s loaded %s from %s%n","\u001B[40m" + name + "\u001B[0m", "\u001B[32m" + "successfully" + "\u001B[0m" , texturePath);
                 return texture;

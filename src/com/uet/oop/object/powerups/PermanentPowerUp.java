@@ -8,7 +8,4 @@ public abstract class PermanentPowerUp extends PowerUp {
         super(type);
     }
 
-    @Override
-    public abstract void applyPowerUp(Player player);
-
 }

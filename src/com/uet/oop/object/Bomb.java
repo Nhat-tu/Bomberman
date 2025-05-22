@@ -55,7 +55,6 @@ public class Bomb implements Renderable {
 
     public void setupAnimation() {
         int pendingExplosionFrames = 4;
-        int explosionFrames = 3;
 // ------------------------------------
         // pending explosion
         BufferedImage[] exploding = new BufferedImage[pendingExplosionFrames];
@@ -65,11 +64,11 @@ public class Bomb implements Renderable {
         exploding[2] = textureManager.getTexture("bomb_2.png");
         exploding[3] = textureManager.getTexture("bomb_1.png");
 
-        Animation explodingAnimation = new Animation(exploding, 250, true);
-        animations.put("explodingAnimation", explodingAnimation);
+        Animation pendingExplosionAnimation = new Animation(exploding, 250, true);
+        animations.put("pendingExplosionAnimation", pendingExplosionAnimation);
 
 //-------------------------------------
-        setAnimation("explodingAnimation"); // default
+        setAnimation("pendingExplosionAnimation"); // default
     }
 
     public void setAnimation(String animationName) {
@@ -93,7 +92,7 @@ public class Bomb implements Renderable {
 
     private void setUpFireAnimation(Rectangle area, int direction, boolean isLastArea) {
         BufferedImage[] fireFrames = new BufferedImage[3];
-        String prefix = "";
+        String prefix;
 
         if (area.equals(explosionAreas.getFirst())) {
             prefix = "bomb_exploded_";

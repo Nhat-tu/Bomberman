@@ -7,10 +7,9 @@ public class SpeedPowerUp extends TemporaryPowerUp{
         super(type);
     }
 
-
     @Override
-    public void applyPowerUp(Player player) {
-        player.currentPowerups.add(this);
+    public void applyPowerup(Player player) {
+
     }
 
     @Override

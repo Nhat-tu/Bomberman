@@ -6,8 +6,11 @@ public class BombUpPowerUp extends PermanentPowerUp {
     public BombUpPowerUp (PowerUpType type) {
         super(type);
     }
-    @Override
-    public void applyPowerUp(Player player) {
 
+    public void applyPowerup(Player player) {
+        if (player.currentBombs.size() < 3) {
+            int currentBomb = player.getMaxBombs();
+            player.setMaxBombs(currentBomb + 1);
+        }
     }
 }
