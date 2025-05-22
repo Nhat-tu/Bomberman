@@ -1,9 +1,11 @@
 package com.uet.oop.object.powerups;
 
 import com.uet.oop.object.Player;
-import com.uet.oop.object.Position;
+
+import java.util.Iterator;
 
 public abstract class TemporaryPowerUp extends PowerUp {
+    private long startTime;
     private int duration;
 
 
@@ -16,13 +18,17 @@ public abstract class TemporaryPowerUp extends PowerUp {
         return duration;
     }
 
+    public long getStartTime() {
+        return startTime;
+    }
+
     public void setDuration(int duration) {
         this.duration = duration;
     }
 
-    @Override
-    public abstract void applyPowerUp(Player player);
+    public void setStartTime() {
+        this.startTime = System.currentTimeMillis();
+    }
 
-    public abstract void removePowerUp(Player player);
-
+    public abstract void removePowerUp(Player player, Iterator<PowerUp> iterator);
 }

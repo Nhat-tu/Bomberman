@@ -5,7 +5,6 @@ import com.uet.oop.object.Position;
 
 public abstract class PowerUp {
     protected Position position;
-//    protected BufferedImage texture;
 
     public enum PowerUpType {
         // Classic power-ups
@@ -42,5 +41,11 @@ public abstract class PowerUp {
         this.position = position;
     }
 
-    public abstract void applyPowerUp(Player player);
+    public abstract void applyPowerup(Player player);
+
+    public void addPowerUp(Player player) {
+        player.currentPowerups.add(this);
+        applyPowerup(player);
+    }
+
 }
