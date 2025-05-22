@@ -69,13 +69,13 @@
 /sprites/oneal_right1.png
 /sprites/oneal_right2.png
 /sprites/oneal_right3.png
+/sprites/player_dead_0.png
 /sprites/player_dead_1.png
 /sprites/player_dead_2.png
 /sprites/player_dead_3.png
 /sprites/player_dead_4.png
 /sprites/player_dead_5.png
 /sprites/player_dead_6.png
-/sprites/player_dead_7.png
 /sprites/player_down.png
 /sprites/player_down_1.png
 /sprites/player_down_2.png

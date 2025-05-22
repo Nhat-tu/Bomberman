@@ -94,7 +94,7 @@ public class TileManager {
                             // get tile's powerup
                             if (destroyingTiles.containsKey(mapPos)) {
                                 DestructibleTile powerupTile = destroyingTiles.get(mapPos);
-                                powerupTile.potentialPowerUp.applyPowerUp(gw.player);
+                                powerupTile.potentialPowerUp.addPowerUp(gw.player);
                                 destroyingTiles.remove(mapPos);
                                 charMap[row][col] = ' ';
                             }
@@ -112,12 +112,15 @@ public class TileManager {
         int tileRow = position.getY() / gw.tileSize;
         int tileCol = position.getX() / gw.tileSize;
 
+        // serve the purpose to remove powerup when collected
         if (destroyingTiles.containsKey(position)) {
             return destroyingTiles.get(position);
         }
 
         char tileChar = charMap[tileRow][tileCol];
-        // instantiate a new instance of Tile instead of using a reference to the same instance.
+        // instantiate a new instance of Tile instead of using the same GLOBAL instance in Map<char,Tile> tiles.
+        // separately handle each tile's own animation by the new instance, not GLOBAL instance in tiles
+        // NOTE: instances in tiles only serve map-drawing
         Tile result = switch (tileChar) {
             case '#', 'x' -> new IndestructibleTile(gw, textureManager);
             case '*' ->
@@ -142,7 +145,8 @@ public class TileManager {
     // if (player collides DTile && DTile.isDestroyed) destroyTile(Tile.getPosition)
     public void destroyTile(Position tilePosition) {
         Tile destroyedTile = getTileAt(tilePosition);
-        if (destroyedTile.getTileType() == Tile.TileType.DESTRUCTIBLE) {
+        if (destroyedTile.getTileType() == Tile.TileType.DESTRUCTIBLE ||
+            destroyedTile.getTileType() == Tile.TileType.HAS_POWERUP) {
             DestructibleTile tempDestructible = (DestructibleTile) destroyedTile;
             tempDestructible.destroyed();
             destroyingTiles.put(tilePosition, tempDestructible);

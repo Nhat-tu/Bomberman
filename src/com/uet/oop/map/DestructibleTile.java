@@ -11,7 +11,7 @@ import java.util.HashMap;
 
 public class DestructibleTile extends Tile {
     protected PowerUp potentialPowerUp;
-    public boolean isDestroyed = false;
+//    public boolean isDestroyed = false;
 
     public DestructibleTile(PowerUp potentialPowerUp, GameWindow gw, TextureManager textureManager) {
         this.tileType = TileType.DESTRUCTIBLE;
@@ -30,14 +30,13 @@ public class DestructibleTile extends Tile {
 
     public void destroyed() {
         this.setAnimations("explodedBrick");
-        this.isDestroyed = true;
-        if (this.potentialPowerUp.getType() == PowerUp.PowerUpType.NULL) {
+//        this.isDestroyed = true;
+
+        if (this.potentialPowerUp.getType() == PowerUp.PowerUpType.NULL ||
+            this.getTileType() == TileType.HAS_POWERUP) {
             this.tileType = TileType.PASSABLE;
         } else {
             this.tileType = TileType.HAS_POWERUP;
-        }
-        if (this.currentAnimation != null) {
-            this.currentAnimation.resetAndStart();
         }
         if (this.currentAnimation != null) {
             this.currentAnimation.resetAndStart();
@@ -76,7 +75,7 @@ public class DestructibleTile extends Tile {
             case NULL ->
                 displayPowerupFrames[0] = textureManager.getTexture("grass.png");
         }
-        Animation displayPowerup = new Animation(displayPowerupFrames, 100, true);
+        Animation displayPowerup = new Animation(displayPowerupFrames, 100, false);
         animations.put("displayPowerup", displayPowerup);
 
         setAnimations("brick");

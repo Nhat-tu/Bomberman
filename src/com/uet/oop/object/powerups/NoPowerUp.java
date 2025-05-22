@@ -8,7 +8,12 @@ public class NoPowerUp extends PowerUp {
     }
 
     @Override
-    public void applyPowerUp(Player player) {
+    public void applyPowerup(Player player) {
+        return;
+    }
+
+    @Override
+    public void addPowerUp(Player player) {
         return;
     }
 
