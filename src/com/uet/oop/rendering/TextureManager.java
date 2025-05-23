@@ -8,7 +8,6 @@ import java.io.IOException;
 import javax.imageio.ImageIO;
 import java.util.*;
 
-// no more <object>.loadTexture.
 public class TextureManager {
     private Map<String, BufferedImage> textureMap;
 

@@ -4,16 +4,22 @@
 
 ## Mục lục
 * [Giới thiệu](#giới-thiệu)
+* [Cây kế thừa của trò chơi](#cây-kế-thừa-của-trò-chơi)
 * [Mô tả về các đối tượng trong trò chơi](#mô-tả-về-các-đối-tượng-trong-trò-chơi)
 * [Mô tả về các vật phẩm trong trò chơi](#mô-tả-về-các-vật-phẩm-trong-trò-chơi)
 * [Mô tả về các kẻ địch trong trò chơi](#mô-tả-về-các-kẻ-địch-trong-trò-chơi)
 * [Mô tả về gameplay, xử lý va chạm và xử lý bom nổ](#mô-tả-game-play-xử-lý-va-chạm-và-xử-lý-bom-nổ)
+* [Nhiệm vụ đã hoàn thành](#nhiệm-vụ-đã-hoàn-thành)
 
 
 ## Giới thiệu
 Bomberman là một tựa game hành động giải đố cổ điển được phát triển bởi Hudson Soft. Ban đầu, game được phát hành cho hệ máy Famicom (tên gọi khác của NES tại Nhật Bản) vào ngày 19 tháng 12 năm 1985. Sau đó, game được phát hành tại thị trường Bắc Mỹ vào tháng 1 năm 1989.
 
 Trong game, người chơi điều khiển nhân vật Bomberman, một robot đặt bom để tiêu diệt kẻ thù và phá hủy các khối gạch mềm nhằm tìm đường ra ở mỗi màn chơi. Bomberman bắt đầu với một quả bom duy nhất và bán kính nổ giới hạn. Tuy nhiên, người chơi có thể thu thập các vật phẩm tăng sức mạnh ẩn sau các khối gạch để tăng số lượng bom đặt được, tăng bán kính nổ, tăng tốc độ chạy.
+
+
+## Cây kế thừa của trò chơi
+![Diagram](res/Diagram.png)
 
 
 ## Mô tả về các đối tượng trong trò chơi
@@ -50,3 +56,19 @@ Trong game, người chơi điều khiển nhân vật Bomberman, một robot đ
 - Một đối tượng thuộc phạm vi Bomb nổ có nghĩa là đối tượng đó va chạm với một trong các tia lửa được tạo ra tại thời điểm một đối tượng Bomb nổ.
 - Khi Bomb nổ, một Flame trung tâm tại vị trí Bomb nổ và bốn Flame tại bốn vị trí ô đơn vị xung quanh vị trí của Bomb xuất hiện theo bốn hướng trên/dưới/trái/phải. Độ dài bốn Flame xung quanh   mặc định là 1 đơn vị, được tăng lên khi Bomber sử dụng các FlameItem.
 - Khi các Flame xuất hiện, nếu có một đối tượng thuộc loại Brick/Wall nằm trên vị trí một trong các Flame thì độ dài Flame đó sẽ được giảm đi để sao cho Flame chỉ xuất hiện đến vị trí đối tượng Brick/Wall theo hướng xuất hiện. Lúc đó chỉ có đối tượng Brick/Wall bị ảnh hưởng bởi Flame, các đối tượng tiếp theo không bị ảnh hưởng. Còn nếu vật cản Flame là một đối tượng Bomb khác thì đối tượng Bomb đó cũng sẽ nổ ngay lập tức.
+
+
+## Nhiệm vụ đã hoàn thành
+#### Gói bắt buộc
+- [x] Thiết kế cây thừa kế cho các đối tượng game.
+- [x] Xây dựng bản đồ màn chơi từ tệp cấu hình.
+- [x] Di chuyển Bomber theo sự điều khiển từ người chơi.
+- [ ] Tự động di chuyển các Enemy.
+- [x] Xử lý va chạm cho các đối tượng Bomber, Enemy, Wall, Brick, Bomb.
+- [x] Xử lý bom nổ.
+- [x] Xử lý Bomber sử dụng các Item và khi đi vào vị trí Portal.  
+#### Gói tùy chọn
+- [ ] Nâng cấp thuật toán tìm đường cho Enemy.
+- [ ] Cài đặt thuật toán AI cho Bomber (tự chơi).
+- [ ] Xử lý hiệu ứng âm thanh (thêm music & sound effects).
+- [ ] Phát triển hệ thống server-client để nhiều người có thể cùng chơi qua mạng LAN hoặc Internet.
