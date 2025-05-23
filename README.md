@@ -4,6 +4,7 @@
 
 ## Mục lục
 * [Giới thiệu](#giới-thiệu)
+* [Cây kế thừa của trò chơi](#cây-kế-thừa-của-trò-chơi)
 * [Mô tả về các đối tượng trong trò chơi](#mô-tả-về-các-đối-tượng-trong-trò-chơi)
 * [Mô tả về các vật phẩm trong trò chơi](#mô-tả-về-các-vật-phẩm-trong-trò-chơi)
 * [Mô tả về các kẻ địch trong trò chơi](#mô-tả-về-các-kẻ-địch-trong-trò-chơi)
@@ -15,6 +16,10 @@
 Bomberman là một tựa game hành động giải đố cổ điển được phát triển bởi Hudson Soft. Ban đầu, game được phát hành cho hệ máy Famicom (tên gọi khác của NES tại Nhật Bản) vào ngày 19 tháng 12 năm 1985. Sau đó, game được phát hành tại thị trường Bắc Mỹ vào tháng 1 năm 1989.
 
 Trong game, người chơi điều khiển nhân vật Bomberman, một robot đặt bom để tiêu diệt kẻ thù và phá hủy các khối gạch mềm nhằm tìm đường ra ở mỗi màn chơi. Bomberman bắt đầu với một quả bom duy nhất và bán kính nổ giới hạn. Tuy nhiên, người chơi có thể thu thập các vật phẩm tăng sức mạnh ẩn sau các khối gạch để tăng số lượng bom đặt được, tăng bán kính nổ, tăng tốc độ chạy.
+
+
+## Cây kế thừa của trò chơi
+![Diagram](res/Diagram.png)
 
 
 ## Mô tả về các đối tượng trong trò chơi
@@ -55,7 +60,7 @@ Trong game, người chơi điều khiển nhân vật Bomberman, một robot đ
 
 ## Nhiệm vụ đã hoàn thành
 #### Gói bắt buộc
-- [ ] Thiết kế cây thừa kế cho các đối tượng game.
+- [x] Thiết kế cây thừa kế cho các đối tượng game.
 - [x] Xây dựng bản đồ màn chơi từ tệp cấu hình.
 - [x] Di chuyển Bomber theo sự điều khiển từ người chơi.
 - [ ] Tự động di chuyển các Enemy.
