@@ -8,6 +8,7 @@
 * [Mô tả về các vật phẩm trong trò chơi](#mô-tả-về-các-vật-phẩm-trong-trò-chơi)
 * [Mô tả về các kẻ địch trong trò chơi](#mô-tả-về-các-kẻ-địch-trong-trò-chơi)
 * [Mô tả về gameplay, xử lý va chạm và xử lý bom nổ](#mô-tả-game-play-xử-lý-va-chạm-và-xử-lý-bom-nổ)
+* [Nhiệm vụ đã hoàn thành](#nhiệm-vụ-đã-hoàn-thành)
 
 
 ## Giới thiệu
