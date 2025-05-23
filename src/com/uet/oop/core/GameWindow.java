@@ -1,6 +1,7 @@
 package com.uet.oop.core;
 
 import com.uet.oop.map.TileManager;
+import com.uet.oop.object.Enemy;
 import com.uet.oop.object.Player;
 import com.uet.oop.rendering.RenderManager;
 import com.uet.oop.rendering.TextureManager;
@@ -33,8 +34,9 @@ public class GameWindow extends JPanel implements Runnable {
 
     KeyboardHandler keyHandler;
     public RenderManager renderManager;
-    TextureManager textureManager;
+    public TextureManager textureManager;
     public TileManager tileManager;
+    public EnemyHandler enemyHandler;
     public Player player;
 
 /*    --- Load game resources --- */
@@ -51,8 +53,13 @@ public class GameWindow extends JPanel implements Runnable {
         player = new Player(this, this.keyHandler, this.textureManager); // migrate setUpAnimation to constructor
         tileManager.readyMap();
 
+        enemyHandler = new EnemyHandler(this, this.textureManager, this.tileManager);
+
         // can add more
         renderManager.addRenderable(player);
+        for (Enemy enemy : enemyHandler.enemies) {
+            renderManager.addRenderable(enemy);
+        }
     }
 
     /**
@@ -94,6 +101,9 @@ public class GameWindow extends JPanel implements Runnable {
     }
 
     public void update() {
+        // MAGIC. DON'T TOUCH
+        enemyHandler.update(); // call this BEFORE player.update
+        // you have been warned!!!
         player.update();
     }
 

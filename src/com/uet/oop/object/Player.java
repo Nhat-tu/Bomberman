@@ -55,8 +55,8 @@ public class Player extends GameEntity {
         this.hitRect = new Rectangle (
                 0,
                 0,
-                38,
-                40
+                37,
+                37
         );
         this.isAlive = true;
     }
@@ -169,10 +169,10 @@ public class Player extends GameEntity {
     public void movement() {
         int newX = mapPosition.getX();
         int newY = mapPosition.getY();
-// Add at the beginning of movement()
+        // Add at the beginning of movement()
         final double DIAGONAL_FACTOR = 0.707; // approximately 1/√2
 
-// Then modify the movement speed when moving diagonally
+        // normalize
         if (keyH.isKeyPressed(KeyEvent.VK_W) && (keyH.isKeyPressed(KeyEvent.VK_A) || keyH.isKeyPressed(KeyEvent.VK_D)) ||
                 keyH.isKeyPressed(KeyEvent.VK_S) && (keyH.isKeyPressed(KeyEvent.VK_A) || keyH.isKeyPressed(KeyEvent.VK_D))) {
             int diagonalSpeed = (int)(movementSpeed * DIAGONAL_FACTOR);
@@ -182,20 +182,19 @@ public class Player extends GameEntity {
             if (keyH.isKeyPressed(KeyEvent.VK_A)) newX -= diagonalSpeed;
             if (keyH.isKeyPressed(KeyEvent.VK_D)) newX += diagonalSpeed;
         } else {
-
             if (keyH.isKeyPressed(KeyEvent.VK_W)) {
                 setAnimation("moveUpAnimation");
                 newY -= movementSpeed;
                 currentAnimation.update();
-            } if (keyH.isKeyPressed(KeyEvent.VK_S)) {
+            } else if (keyH.isKeyPressed(KeyEvent.VK_S)) {
                 setAnimation("moveDownAnimation");
                 newY += movementSpeed;
                 currentAnimation.update();
-            } if (keyH.isKeyPressed(KeyEvent.VK_A)) {
+            } else if (keyH.isKeyPressed(KeyEvent.VK_A)) {
                 setAnimation("moveLeftAnimation");
                 newX -= movementSpeed;
                 currentAnimation.update();
-            } if (keyH.isKeyPressed(KeyEvent.VK_D)) {
+            } else if (keyH.isKeyPressed(KeyEvent.VK_D)) {
                 setAnimation("moveRightAnimation");
                 newX += movementSpeed;
                 currentAnimation.update();
@@ -221,6 +220,12 @@ public class Player extends GameEntity {
             setMapPosition(new Position(newX, newY));
         }
 
+        for (Bomb bomb : currentBombs) {
+            if (Math.abs(bomb.getMapPosition().getX() -newX) >= gw.tileSize ||
+                Math.abs(bomb.getMapPosition().getY() - newY) >= gw.tileSize) {
+                bomb.setEntityCanPass(false);
+            }
+        }
     }
 
     public void placeBombs() {
