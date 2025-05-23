@@ -41,10 +41,9 @@ public abstract class GameEntity implements Renderable {
 
     public void setMovementSpeed(int movementSpeed) {
         this.movementSpeed = movementSpeed;
-        System.out.println("move spd: " + movementSpeed);
     }
 
-    public void setHitPoints(int hitPoints) { // update healthpoint
+    public void setHitPoints(int hitPoints) {
         this.hitPoints = hitPoints;
     }
 }
