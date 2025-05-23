@@ -152,6 +152,7 @@ public class Bomb implements Renderable {
 
         if (!exploded && System.currentTimeMillis() - plantTime >= fuseTime) {
             explode();
+            gw.audioManager.playSound("explosion.wav");
         }
 
         if (exploded && !explosionComplete) {
@@ -255,7 +256,8 @@ public class Bomb implements Renderable {
                     if (tile.getTileType() == Tile.TileType.INDESTRUCTIBLE) {
                         break;
                     } else if (tile.getTileType() == Tile.TileType.DESTRUCTIBLE ||
-                               tile.getTileType() == Tile.TileType.HAS_POWERUP) {
+                               tile.getTileType() == Tile.TileType.HAS_POWERUP ||
+                               tile.getTileType() == Tile.TileType.PORTAL) {
                         destroyedTilePositions.add(tilePos);
                         break;
                     }
@@ -345,16 +347,16 @@ public class Bomb implements Renderable {
         return explosionComplete;
     }
 
-    public List<Rectangle> getExplosionAreas() {
-        return explosionAreas;
-    }
-
     public Position getMapPosition() {
         return mapPosition;
     }
 
     public Rectangle getHitRect() {
         return hitRect;
+    }
+
+    public Animation getCurrentAnimation() {
+        return currentAnimation;
     }
 
     public boolean getEntityCanPass() {

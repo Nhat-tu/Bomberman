@@ -23,7 +23,7 @@ public class SpeedPowerUp extends TemporaryPowerUp{
 
     @Override
     public void removePowerUp(Player player, Iterator<PowerUp> iterator) {
-        player.setMovementSpeed(player.getMovementSpeed() - speedIncrease);
+        player.setMovementSpeed(4); // Set to default speed to avoid speed lower than default when player's dead before the power up's duration/
         iterator.remove();
         System.out.println("Player's movement speed is restored to default. Current speed: " + player.getMovementSpeed());
     }

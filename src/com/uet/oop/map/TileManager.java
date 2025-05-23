@@ -20,7 +20,7 @@ public class TileManager {
     private Map<Character, Tile> tiles; // stores all types of Tile for use
     public char[][] charMap;
     private Position[][] tilePositions;
-    private Map<Position, DestructibleTile> destroyingTiles;
+    public Map<Position, DestructibleTile> destroyingTiles;
 
     GameWindow gw;
     TextureManager textureManager;
@@ -33,7 +33,7 @@ public class TileManager {
         loadMap();
     }
 
-    private void setDefault() {
+    public void setDefault() {
         this.tiles = new HashMap<>();
         this.destroyingTiles = new HashMap<>();
         this.charMap = new char[gw.mapRow][gw.mapCol];
@@ -44,7 +44,7 @@ public class TileManager {
         tiles.put(' ', new GrassTile(gw, textureManager));
         tiles.put('#', new IndestructibleTile(gw, textureManager));
         tiles.put('*', new DestructibleTile(new NoPowerUp(PowerUp.PowerUpType.NULL), gw, textureManager));
-        tiles.put('x', new IndestructibleTile(gw, textureManager));
+        tiles.put('x', new Portal(new NoPowerUp(PowerUp.PowerUpType.NULL), gw, textureManager));
         tiles.put('b', new DestructibleTile(new BombUpPowerUp(PowerUp.PowerUpType.BOMB_UP), gw, textureManager));
         tiles.put('f', new DestructibleTile(new FireUpPowerUp(PowerUp.PowerUpType.FIRE_UP), gw, textureManager));
         tiles.put('s', new DestructibleTile(new SpeedPowerUp(PowerUp.PowerUpType.SPEED_UP), gw, textureManager));
@@ -52,9 +52,9 @@ public class TileManager {
 
     public void loadMap() {
         try {
-            InputStream is = getClass().getResourceAsStream("/levels/Level0.txt");
+            InputStream is = getClass().getResourceAsStream("/levels/Level1.txt");
             if (is == null) {
-                throw new Exception("Unable to fetch from res/levels/Level0.txt");
+                throw new Exception("Unable to fetch from res/levels/Level1.txt");
             }
             BufferedReader br = new BufferedReader(new InputStreamReader(is));
 
@@ -106,6 +106,7 @@ public class TileManager {
 
                     if (mapTileRect.intersects(objectRect)) {
                         if (currentTile.getTileType() == Tile.TileType.HAS_POWERUP) {
+                            gw.audioManager.playSound("collect_powerup.wav");
                             // get tile's powerup
                             if (destroyingTiles.containsKey(mapPos)) {
                                 DestructibleTile powerupTile = destroyingTiles.get(mapPos);
@@ -114,6 +115,9 @@ public class TileManager {
                                 charMap[row][col] = ' ';
                             }
                             return false; // allow movement to this powerup tile.
+                        } else if (currentTile.getTileType() == Tile.TileType.PORTAL &&
+                                currentTile.animations.get("displayPortal") == currentTile.currentAnimation) {
+                            return false;
                         }
                         return true;
                     }
@@ -135,7 +139,7 @@ public class TileManager {
         char tileChar = charMap[tileRow][tileCol];
 
         // If it's an enemy position, treat it as a grass tile for movement purposes
-        if (tileChar == '1') {
+        if (tileChar == '1' || tileChar == 'p') {
             return tiles.get(' '); // Return grass tile for enemy positions
         }
 
@@ -143,9 +147,10 @@ public class TileManager {
         // separately handle each tile's own animation by the new instance, not GLOBAL instance in tiles
         // NOTE: instances in tiles only serve map-drawing
         Tile result = switch (tileChar) {
-            case '#', 'x' -> new IndestructibleTile(gw, textureManager);
+            case '#' -> new IndestructibleTile(gw, textureManager);
             case '*' ->
                     new DestructibleTile(new NoPowerUp(PowerUp.PowerUpType.NULL), gw, textureManager);
+            case 'x' -> new Portal(new NoPowerUp(PowerUp.PowerUpType.NULL), gw, textureManager);
             case 'b' ->
                     new DestructibleTile(new BombUpPowerUp(PowerUp.PowerUpType.BOMB_UP), gw, textureManager);
             case 'f' ->
@@ -171,6 +176,10 @@ public class TileManager {
             DestructibleTile tempDestructible = (DestructibleTile) destroyedTile;
             tempDestructible.destroyed();
             destroyingTiles.put(tilePosition, tempDestructible);
+        } else if (destroyedTile.getTileType() == Tile.TileType.PORTAL) {
+            Portal tempPortalTile = (Portal) destroyedTile;
+            tempPortalTile.destroyed();
+            destroyingTiles.put(tilePosition, tempPortalTile);
         }
     }
 
@@ -212,7 +221,7 @@ public class TileManager {
         for (int i = 0; i < gw.mapRow; i++) {
             for (int j = 0; j < gw.mapCol; j++) {
                 Position tilePos = new Position(j * gw.tileSize, i * gw.tileSize);
-                if (charMap[i][j] == '1') {
+                if (charMap[i][j] == '1' || charMap[i][j] == 'p') {
                     continue;
                 }
                 // check if the tile is destroyed
@@ -229,8 +238,12 @@ public class TileManager {
                                 charMap[i][j] = ' ';
                                 destroyingTiles.remove(tilePos);
                             } else {
-                                // powerup tile remains until player picks it up
-                                destroyingTile.setAnimations("displayPowerup");
+                                if (destroyingTile.getTileType() == Tile.TileType.HAS_POWERUP) {
+                                    // powerup tile remains until player picks it up
+                                    destroyingTile.setAnimations("displayPowerup");
+                                } else if (destroyingTile instanceof Portal && destroyingTile.getTileType() == Tile.TileType.PORTAL) {
+                                    destroyingTile.setAnimations("displayPortal");
+                                }
                             }
                         }
                         continue;
