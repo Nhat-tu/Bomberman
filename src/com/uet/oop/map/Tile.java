@@ -24,13 +24,18 @@ public abstract class Tile implements Renderable {
         PASSABLE,
         INDESTRUCTIBLE,
         DESTRUCTIBLE,
-        HAS_POWERUP
+        HAS_POWERUP,
+        HAS_BOMB
     }
 
     TileType tileType;
 
     public TileType getTileType() {
         return tileType;
+    }
+
+    public void setTileType(TileType tileType) {
+        this.tileType = tileType;
     }
 
     protected abstract void setUpAnimations();

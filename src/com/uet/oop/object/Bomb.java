@@ -22,7 +22,9 @@ public class Bomb implements Renderable {
     private int explosionRadius;
     private GameEntity ownerEntity;
     private Map<String, Animation> animations;
-    Animation currentAnimation;
+    private Animation currentAnimation;
+    private Rectangle hitRect;
+    private boolean entityCanPass;
     private boolean exploded;
     private boolean explosionComplete;
     private List<Rectangle> explosionAreas;
@@ -50,6 +52,9 @@ public class Bomb implements Renderable {
         this.gw = gw;
         this.textureManager = textureManager;
         this.currentAnimation = null;
+
+        this.hitRect = new Rectangle(0, 0, gw.tileSize, gw.tileSize);
+        this.entityCanPass = true;
         setupAnimation();
     }
 
@@ -181,7 +186,18 @@ public class Bomb implements Renderable {
         for (Rectangle explosionArea : explosionAreas) {
             if (checkCollision(playerHitRect, explosionArea)) {
                 gw.player.takeDamage();
-                break;
+            }
+            for (Enemy enemy : gw.enemyHandler.enemies) {
+                Rectangle enemyHitRect = new Rectangle(
+                        enemy.getMapPosition().getX() + enemy.hitRect.x,
+                        enemy.getMapPosition().getY() + enemy.hitRect.y,
+                        enemy.hitRect.width,
+                        enemy.hitRect.height
+                );
+
+                if (checkCollision(enemyHitRect, explosionArea)) {
+                    enemy.takeDamage();
+                }
             }
         }
     }
@@ -243,7 +259,6 @@ public class Bomb implements Renderable {
                         destroyedTilePositions.add(tilePos);
                         break;
                     }
-
                     // add explosion area
                     Rectangle explosionArea = new Rectangle(newX, newY, gw.tileSize, gw.tileSize);
                     explosionAreas.add(explosionArea);
@@ -336,5 +351,17 @@ public class Bomb implements Renderable {
 
     public Position getMapPosition() {
         return mapPosition;
+    }
+
+    public Rectangle getHitRect() {
+        return hitRect;
+    }
+
+    public boolean getEntityCanPass() {
+        return entityCanPass;
+    }
+
+    public void setEntityCanPass(boolean entityCanPass) {
+        this.entityCanPass = entityCanPass;
     }
 }
