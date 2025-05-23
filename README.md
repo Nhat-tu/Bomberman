@@ -46,7 +46,6 @@ Trong game, người chơi điều khiển nhân vật Bomberman, một robot đ
 |                    Đồ họa                   |                                                      Chức năng                                                      |
 |:-------------------------------------------:|:-------------------------------------------------------------------------------------------------------------------:|
 | ![Balloom](res/sprites/balloom_right_1.png) |                            Enemy đơn giản nhất, di chuyển ngẫu nhiên với vận tốc cố định                            |
-|    ![Oneal](res/sprites/oneal_right1.png)   | Tốc độ di chuyển thay đổi, lúc nhanh, lúc chậm và di chuyển "thông minh" hơn so với Balloom (biết đuổi theo Bomber) |
 
 
 ## Mô tả game play, xử lý va chạm và xử lý bom nổ
@@ -63,7 +62,7 @@ Trong game, người chơi điều khiển nhân vật Bomberman, một robot đ
 - [x] Thiết kế cây thừa kế cho các đối tượng game.
 - [x] Xây dựng bản đồ màn chơi từ tệp cấu hình.
 - [x] Di chuyển Bomber theo sự điều khiển từ người chơi.
-- [ ] Tự động di chuyển các Enemy.
+- [x] Tự động di chuyển các Enemy.
 - [x] Xử lý va chạm cho các đối tượng Bomber, Enemy, Wall, Brick, Bomb.
 - [x] Xử lý bom nổ.
 - [x] Xử lý Bomber sử dụng các Item và khi đi vào vị trí Portal.  
