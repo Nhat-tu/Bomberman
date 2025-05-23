@@ -69,5 +69,5 @@ Trong game, người chơi điều khiển nhân vật Bomberman, một robot đ
 #### Gói tùy chọn
 - [ ] Nâng cấp thuật toán tìm đường cho Enemy.
 - [ ] Cài đặt thuật toán AI cho Bomber (tự chơi).
-- [ ] Xử lý hiệu ứng âm thanh (thêm music & sound effects).
+- [x] Xử lý hiệu ứng âm thanh (thêm music & sound effects).
 - [ ] Phát triển hệ thống server-client để nhiều người có thể cùng chơi qua mạng LAN hoặc Internet.

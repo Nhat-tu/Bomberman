@@ -60,12 +60,4 @@ public class EnemyHandler {
             gw.renderManager.removeRenderable(enemy);
         }
     }
-
-//    public void draw(Graphics2D g) {
-//        for (Enemy enemy : enemies) {
-//            enemy.draw(g);
-//        }
-//    }
-
-
 }

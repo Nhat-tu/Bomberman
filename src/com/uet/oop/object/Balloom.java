@@ -182,7 +182,7 @@ public class Balloom extends Enemy {
                 hitRect.height
         );
 
-        if (balloomRect.intersects(playerMapRect)) {
+        if (player.isAlive() && balloomRect.intersects(playerMapRect)) {
             player.die();
         }
     }
@@ -216,6 +216,11 @@ public class Balloom extends Enemy {
             }
 
             g.drawImage(frameToRender, balloomScreenX, balloomScreenY, gw.tileSize, gw.tileSize,null);
+            // DEBUG
+
+            g.setColor(Color.WHITE);
+            g.drawRect(balloomScreenX + hitRect.x, balloomScreenY + hitRect.y, hitRect.width, hitRect.height);
+
         } else { // if fails then
             g.setColor(new Color(125, 120, 200, 255));
             g.fillRect(mapPosition.getX(), mapPosition.getY(), gw.tileSize, gw.tileSize);

@@ -5,6 +5,7 @@ import com.uet.oop.object.Enemy;
 import com.uet.oop.object.Player;
 import com.uet.oop.rendering.RenderManager;
 import com.uet.oop.rendering.TextureManager;
+import com.uet.oop.sfx.AudioManager;
 
 import java.awt.Color;
 import java.awt.Dimension;
@@ -12,11 +13,14 @@ import java.awt.Graphics;
 import java.awt.Graphics2D;
 import javax.swing.*;
 
+import static javax.sound.sampled.Clip.LOOP_CONTINUOUSLY;
+
 public class GameWindow extends JPanel implements Runnable {
     // Some components
     final int originalTileSize = 16;
     final int scale = 3;
     public final int tileSize = originalTileSize * scale;
+    public boolean allEnemiesDead = false;
 
     // SCREEN SETTINGS
     public final int screenCol = 15;
@@ -37,6 +41,7 @@ public class GameWindow extends JPanel implements Runnable {
     public TextureManager textureManager;
     public TileManager tileManager;
     public EnemyHandler enemyHandler;
+    public AudioManager audioManager;
     public Player player;
 
 /*    --- Load game resources --- */
@@ -44,11 +49,14 @@ public class GameWindow extends JPanel implements Runnable {
         keyHandler = new KeyboardHandler();
         renderManager = new RenderManager();
         textureManager = new TextureManager();
+        audioManager = new AudioManager();
 
         this.addKeyListener(keyHandler);
 
         // can add more
         textureManager.bulkLoadTexture();
+        audioManager.bulkLoadAudio();
+        audioManager.loopSound("background_music.wav", LOOP_CONTINUOUSLY);
         tileManager = new TileManager(this, this.textureManager);
         player = new Player(this, this.keyHandler, this.textureManager); // migrate setUpAnimation to constructor
         tileManager.readyMap();
@@ -104,6 +112,10 @@ public class GameWindow extends JPanel implements Runnable {
         // MAGIC. DON'T TOUCH
         enemyHandler.update(); // call this BEFORE player.update
         // you have been warned!!!
+        if (enemyHandler.enemies.isEmpty() && !allEnemiesDead) {
+            allEnemiesDead = true;
+            audioManager.playSound("kill_all_enemies.wav");
+        }
         player.update();
     }
 

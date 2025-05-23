@@ -2,6 +2,8 @@ package com.uet.oop.object;
 
 import com.uet.oop.core.GameWindow;
 import com.uet.oop.core.KeyboardHandler;
+import com.uet.oop.map.Portal;
+import com.uet.oop.map.Tile;
 import com.uet.oop.object.powerups.PowerUp;
 import com.uet.oop.object.powerups.TemporaryPowerUp;
 import com.uet.oop.rendering.Animation;
@@ -21,7 +23,6 @@ public class Player extends GameEntity {
     private Position screenPosition;
     private int bombs;
     private int explosionRadius;
-    private int invulnerabilityTimer;
     public List<Bomb> currentBombs;
     public List<PowerUp> currentPowerups;
 
@@ -31,6 +32,8 @@ public class Player extends GameEntity {
 
     private boolean messageShown = false;
     private boolean isAlive;
+    private long lastStepTime;
+    private final int stepsInterval = 250;
 
     public Player(GameWindow gw, KeyboardHandler keyH, TextureManager textureManager) /*, TileManager tileManager)*/ {
         setDefaultValues();
@@ -51,7 +54,6 @@ public class Player extends GameEntity {
         this.hitPoints = 1;
         this.bombs = 1;
         this.explosionRadius = 1;
-        this.invulnerabilityTimer = 3000; // ms
         this.hitRect = new Rectangle (
                 0,
                 0,
@@ -117,7 +119,7 @@ public class Player extends GameEntity {
         for (int i = 0; i < framesPerDeathAnimation - 1; i++) {
             deathFrames[i] = textureManager.getTexture(prefix + i + ".png");
         }
-        Animation deathAnimation = new Animation(deathFrames, 300, false);
+        Animation deathAnimation = new Animation(deathFrames, 425, false);
         animations.put("deathAnimation", deathAnimation);
 //-------------------------------------
         setAnimation("moveRightAnimation"); // default
@@ -159,6 +161,8 @@ public class Player extends GameEntity {
         } else {
             currentAnimation.update();
             if (!currentAnimation.isRunning()) {
+                gw.tileManager.destroyingTiles.clear();
+                gw.tileManager.loadMap();
                 setDefaultValues();
                 setAnimation("moveRightAnimation");
             }
@@ -169,45 +173,46 @@ public class Player extends GameEntity {
     public void movement() {
         int newX = mapPosition.getX();
         int newY = mapPosition.getY();
+        boolean isMoving = false;
         // Add at the beginning of movement()
         final double DIAGONAL_FACTOR = 0.707; // approximately 1/√2
 
         // normalize
         if (keyH.isKeyPressed(KeyEvent.VK_W) && (keyH.isKeyPressed(KeyEvent.VK_A) || keyH.isKeyPressed(KeyEvent.VK_D)) ||
-                keyH.isKeyPressed(KeyEvent.VK_S) && (keyH.isKeyPressed(KeyEvent.VK_A) || keyH.isKeyPressed(KeyEvent.VK_D))) {
-            int diagonalSpeed = (int)(movementSpeed * DIAGONAL_FACTOR);
+            keyH.isKeyPressed(KeyEvent.VK_S) && (keyH.isKeyPressed(KeyEvent.VK_A) || keyH.isKeyPressed(KeyEvent.VK_D))) {
+            isMoving = true;
+            int diagonalSpeed = (int) (movementSpeed * DIAGONAL_FACTOR);
             // Use diagonalSpeed instead of movementSpeed for both X and Y
             if (keyH.isKeyPressed(KeyEvent.VK_W)) newY -= diagonalSpeed;
             if (keyH.isKeyPressed(KeyEvent.VK_S)) newY += diagonalSpeed;
             if (keyH.isKeyPressed(KeyEvent.VK_A)) newX -= diagonalSpeed;
             if (keyH.isKeyPressed(KeyEvent.VK_D)) newX += diagonalSpeed;
-        } else {
+        } else if (keyH.isKeyPressed(KeyEvent.VK_W) || keyH.isKeyPressed(KeyEvent.VK_D) ||
+                   keyH.isKeyPressed(KeyEvent.VK_S) || keyH.isKeyPressed(KeyEvent.VK_A)) {
+            isMoving = true;
             if (keyH.isKeyPressed(KeyEvent.VK_W)) {
                 setAnimation("moveUpAnimation");
                 newY -= movementSpeed;
-                currentAnimation.update();
             } else if (keyH.isKeyPressed(KeyEvent.VK_S)) {
                 setAnimation("moveDownAnimation");
                 newY += movementSpeed;
-                currentAnimation.update();
             } else if (keyH.isKeyPressed(KeyEvent.VK_A)) {
                 setAnimation("moveLeftAnimation");
                 newX -= movementSpeed;
-                currentAnimation.update();
             } else if (keyH.isKeyPressed(KeyEvent.VK_D)) {
                 setAnimation("moveRightAnimation");
                 newX += movementSpeed;
-                currentAnimation.update();
-            } if (keyH.isKeyPressed(KeyEvent.VK_SPACE)) {
-                placeBombs();
             }
+            currentAnimation.update();
         }
 
+        if (keyH.isKeyPressed(KeyEvent.VK_SPACE)) {
+            placeBombs();
+        }
 
         // Add boundary checks
         newX = Math.max(0, Math.min(newX, gw.mapWidth - gw.tileSize));
         newY = Math.max(0, Math.min(newY, gw.mapHeight - gw.tileSize));
-
 
         Rectangle playerMapRect = new Rectangle(
                 newX + hitRect.x,
@@ -218,12 +223,38 @@ public class Player extends GameEntity {
 
         if (!gw.tileManager.CheckCollision(playerMapRect)) {
             setMapPosition(new Position(newX, newY));
+        } else {
+            isMoving = false;
+        }
+
+        if (isMoving && System.currentTimeMillis() - lastStepTime >= stepsInterval) {
+            lastStepTime = System.currentTimeMillis();
+            gw.audioManager.playSound("footsteps.wav");
         }
 
         for (Bomb bomb : currentBombs) {
-            if (Math.abs(bomb.getMapPosition().getX() -newX) >= gw.tileSize ||
+            if (Math.abs(bomb.getMapPosition().getX() - newX) >= gw.tileSize ||
                 Math.abs(bomb.getMapPosition().getY() - newY) >= gw.tileSize) {
                 bomb.setEntityCanPass(false);
+            }
+        }
+
+        Tile tempTile = gw.tileManager.getTileAt(new Position(newX, newY));
+        if (tempTile instanceof Portal tempPortalTile) {
+            // Convert tile position from screen coordinates to map coordinates
+            int portalMapX = newX / gw.tileSize * gw.tileSize;
+            int portalMapY = newY / gw.tileSize * gw.tileSize;
+
+            Rectangle portalMapRect = new Rectangle(
+                    portalMapX - 5,
+                    portalMapY - 5,
+                    hitRect.width + 10,
+                    hitRect.height + 10
+            );
+
+            if (portalMapRect.contains(playerMapRect) && gw.allEnemiesDead) {
+                gw.audioManager.playSound("portal.wav");
+                gw.audioManager.playSound("mission_accomplished.wav");
             }
         }
     }
@@ -250,19 +281,20 @@ public class Player extends GameEntity {
     @Override
     public void takeDamage() {
         hitPoints -= 1;
-        System.out.println("Player hit!, hitPoints left: " + hitPoints);
+        System.out.println("Player hit!");
         die();
     }
 
     @Override
     public void die() { //
+        gw.audioManager.playSound("player_die.wav");
         isAlive = false;
         setAnimation("deathAnimation");
         /* reset player state, position */
 
-        if (hitPoints == 0) {
+        if (hitPoints <= 0) {
             if (!messageShown) {
-                System.out.println("GAME OVER!");
+                System.out.println("GAME OVER! RESET");
                 messageShown = true;
             }
         }
@@ -311,6 +343,11 @@ public class Player extends GameEntity {
             }
 
             g.drawImage(frameToRender, x, y, gw.tileSize - 6, gw.tileSize - 6,null);
+            // DEBUG
+
+            g.setColor(Color.RED);
+            g.drawRect(x + hitRect.x, y + hitRect.y, hitRect.width, hitRect.height);
+
         } else { // if fails then
             g.setColor(new Color(80, 160, 0));
             g.fillRect(screenPosition.getX(), screenPosition.getY(), gw.tileSize, gw.tileSize);
@@ -323,6 +360,10 @@ public class Player extends GameEntity {
 
     public int getMaxBombs() {
         return bombs;
+    }
+
+    public boolean isAlive() {
+        return isAlive;
     }
 
     public int getExplosionRadius() {
