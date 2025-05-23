@@ -50,3 +50,19 @@ Trong game, người chơi điều khiển nhân vật Bomberman, một robot đ
 - Một đối tượng thuộc phạm vi Bomb nổ có nghĩa là đối tượng đó va chạm với một trong các tia lửa được tạo ra tại thời điểm một đối tượng Bomb nổ.
 - Khi Bomb nổ, một Flame trung tâm tại vị trí Bomb nổ và bốn Flame tại bốn vị trí ô đơn vị xung quanh vị trí của Bomb xuất hiện theo bốn hướng trên/dưới/trái/phải. Độ dài bốn Flame xung quanh   mặc định là 1 đơn vị, được tăng lên khi Bomber sử dụng các FlameItem.
 - Khi các Flame xuất hiện, nếu có một đối tượng thuộc loại Brick/Wall nằm trên vị trí một trong các Flame thì độ dài Flame đó sẽ được giảm đi để sao cho Flame chỉ xuất hiện đến vị trí đối tượng Brick/Wall theo hướng xuất hiện. Lúc đó chỉ có đối tượng Brick/Wall bị ảnh hưởng bởi Flame, các đối tượng tiếp theo không bị ảnh hưởng. Còn nếu vật cản Flame là một đối tượng Bomb khác thì đối tượng Bomb đó cũng sẽ nổ ngay lập tức.
+
+
+## Nhiệm vụ đã hoàn thành
+#### Gói bắt buộc
+- [ ] Thiết kế cây thừa kế cho các đối tượng game.
+- [x] Xây dựng bản đồ màn chơi từ tệp cấu hình.
+- [x] Di chuyển Bomber theo sự điều khiển từ người chơi.
+- [ ] Tự động di chuyển các Enemy.
+- [x] Xử lý va chạm cho các đối tượng Bomber, Enemy, Wall, Brick, Bomb.
+- [x] Xử lý bom nổ.
+- [x] Xử lý Bomber sử dụng các Item và khi đi vào vị trí Portal.  
+#### Gói tùy chọn
+- [ ] Nâng cấp thuật toán tìm đường cho Enemy.
+- [ ] Cài đặt thuật toán AI cho Bomber (tự chơi).
+- [ ] Xử lý hiệu ứng âm thanh (thêm music & sound effects).
+- [ ] Phát triển hệ thống server-client để nhiều người có thể cùng chơi qua mạng LAN hoặc Internet.
