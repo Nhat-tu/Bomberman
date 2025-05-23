@@ -42,7 +42,7 @@ public abstract class PowerUp {
     }
 
     public abstract void applyPowerup(Player player);
-
+    // see also: TileManager.java >> CheckCollision.
     public void addPowerUp(Player player) {
         player.currentPowerups.add(this);
         applyPowerup(player);

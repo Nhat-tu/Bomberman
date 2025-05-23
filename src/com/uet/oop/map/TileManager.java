@@ -1,6 +1,8 @@
 package com.uet.oop.map;
 
 import com.uet.oop.core.GameWindow;
+import com.uet.oop.object.Balloom;
+import com.uet.oop.object.Bomb;
 import com.uet.oop.object.powerups.*;
 import com.uet.oop.rendering.TextureManager;
 import com.uet.oop.object.Position;
@@ -16,7 +18,7 @@ import java.util.HashMap;
 
 public class TileManager {
     private Map<Character, Tile> tiles; // stores all types of Tile for use
-    private char[][] charMap;
+    public char[][] charMap;
     private Position[][] tilePositions;
     private Map<Position, DestructibleTile> destroyingTiles;
 
@@ -75,6 +77,19 @@ public class TileManager {
     }
 
     public boolean CheckCollision(Rectangle objectRect) {
+        for (Bomb bomb : gw.player.currentBombs) {
+            Rectangle bombRect = new Rectangle(
+                    bomb.getMapPosition().getX() + bomb.getHitRect().x,
+                    bomb.getMapPosition().getY() + bomb.getHitRect().y,
+                    bomb.getHitRect().width,
+                    bomb.getHitRect().height
+            );
+
+            if (!bomb.getEntityCanPass() && bombRect.intersects(objectRect)) {
+                return true;
+            }
+        }
+
         for (int row = 0; row < gw.mapRow; row++ ) {
             for (int col = 0; col < gw.mapCol; col++) {
                 Position mapPos = new Position(col * gw.tileSize, row * gw.tileSize);
@@ -118,6 +133,12 @@ public class TileManager {
         }
 
         char tileChar = charMap[tileRow][tileCol];
+
+        // If it's an enemy position, treat it as a grass tile for movement purposes
+        if (tileChar == '1') {
+            return tiles.get(' '); // Return grass tile for enemy positions
+        }
+
         // instantiate a new instance of Tile instead of using the same GLOBAL instance in Map<char,Tile> tiles.
         // separately handle each tile's own animation by the new instance, not GLOBAL instance in tiles
         // NOTE: instances in tiles only serve map-drawing
@@ -191,7 +212,9 @@ public class TileManager {
         for (int i = 0; i < gw.mapRow; i++) {
             for (int j = 0; j < gw.mapCol; j++) {
                 Position tilePos = new Position(j * gw.tileSize, i * gw.tileSize);
-
+                if (charMap[i][j] == '1') {
+                    continue;
+                }
                 // check if the tile is destroyed
                 if (destroyingTiles.containsKey(tilePos)) {
                     DestructibleTile destroyingTile = destroyingTiles.get(tilePos);
