@@ -217,9 +217,8 @@ public class Balloom extends Enemy {
 
             g.drawImage(frameToRender, balloomScreenX, balloomScreenY, gw.tileSize, gw.tileSize,null);
             // DEBUG
-
-            g.setColor(Color.WHITE);
-            g.drawRect(balloomScreenX + hitRect.x, balloomScreenY + hitRect.y, hitRect.width, hitRect.height);
+//            g.setColor(Color.WHITE);
+//            g.drawRect(balloomScreenX + hitRect.x, balloomScreenY + hitRect.y, hitRect.width, hitRect.height);
 
         } else { // if fails then
             g.setColor(new Color(125, 120, 200, 255));

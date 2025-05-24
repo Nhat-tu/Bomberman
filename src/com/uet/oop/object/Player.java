@@ -32,6 +32,7 @@ public class Player extends GameEntity {
 
     private boolean messageShown = false;
     private boolean isAlive;
+    private boolean isInPortal = false;
     private long lastStepTime;
     private final int stepsInterval = 250;
 
@@ -252,10 +253,11 @@ public class Player extends GameEntity {
                     hitRect.height
             );
 
-            if (portalMapRect.intersects(playerMapRect) && gw.allEnemiesDead) {
+            if (portalMapRect.intersects(playerMapRect) && gw.allEnemiesDead && !isInPortal) {
                 gw.audioManager.stopSound("background_music.wav");
                 gw.audioManager.playSound("portal.wav");
                 gw.audioManager.playSound("mission_accomplished.wav");
+                isInPortal = true;
             }
         }
     }
@@ -345,9 +347,8 @@ public class Player extends GameEntity {
 
             g.drawImage(frameToRender, x, y, gw.tileSize - 6, gw.tileSize - 6,null);
             // DEBUG
-
-            g.setColor(Color.RED);
-            g.drawRect(x + hitRect.x, y + hitRect.y, hitRect.width, hitRect.height);
+//            g.setColor(Color.RED);
+//            g.drawRect(x + hitRect.x, y + hitRect.y, hitRect.width, hitRect.height);
 
         } else { // if fails then
             g.setColor(new Color(80, 160, 0));
