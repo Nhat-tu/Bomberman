@@ -241,7 +241,7 @@ public class TileManager {
                                 if (destroyingTile.getTileType() == Tile.TileType.HAS_POWERUP) {
                                     // powerup tile remains until player picks it up
                                     destroyingTile.setAnimations("displayPowerup");
-                                } else if (destroyingTile instanceof Portal && destroyingTile.getTileType() == Tile.TileType.PORTAL) {
+                                } else if (destroyingTile.getTileType() == Tile.TileType.PORTAL) {
                                     destroyingTile.setAnimations("displayPortal");
                                 }
                             }

@@ -48,6 +48,7 @@ public class EnemyHandler {
             if (!enemy.isAlive() && !enemy.getCurrentAnimation().isRunning()) {
                 // cause the game to crash if kill balloom too early
                 // because its death animation is not fully loaded but forced to play
+                // and because you can't modify a list while iterating over it.
                 // safer: create a List of enemies to be removed.
                 enemiesToRemove.add(enemy);
             } else {
