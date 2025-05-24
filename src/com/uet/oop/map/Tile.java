@@ -25,7 +25,8 @@ public abstract class Tile implements Renderable {
         INDESTRUCTIBLE,
         DESTRUCTIBLE,
         HAS_POWERUP,
-        HAS_BOMB
+        HAS_BOMB,
+        PORTAL
     }
 
     TileType tileType;

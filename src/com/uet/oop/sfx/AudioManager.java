@@ -1,11 +1,17 @@
 package com.uet.oop.sfx;
 
-import javax.sound.sampled.*;
-import java.io.File;
-import java.io.IOException;
-import java.util.HashMap;
-import java.util.Map;
+import com.uet.oop.core.ResourceFileReader;
 
+import javax.sound.sampled.*;
+import java.io.IOException;
+import java.io.InputStream;
+import java.net.URL;
+import java.nio.file.Path;
+import java.nio.file.Paths;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 public class AudioManager {
     private Map<String, Clip> audioClips;
@@ -24,7 +30,7 @@ public class AudioManager {
             AudioSystem.getMixerInfo(); // Ensure mixers are loaded
             for (Mixer.Info info : AudioSystem.getMixerInfo()) {
                 Mixer mixer = AudioSystem.getMixer(info);
-                Line.Info[] targetLineInfo = mixer.getTargetLineInfo(); // Get output lines
+//                Line.Info[] targetLineInfo = mixer.getTargetLineInfo(); // Get output lines
 
                 if (mixer.isLineSupported(Port.Info.SPEAKER)) {
                     Line line = mixer.getLine(Port.Info.SPEAKER);
@@ -43,28 +49,75 @@ public class AudioManager {
     }
 
     // load audio
-    public boolean loadAudio(String audioKey, String filePath) {
+    public Clip loadAudio(String audioKey, String audioPath) {
+        if (audioClips.containsKey(audioKey)) {
+            return audioClips.get(audioKey);
+        }
         try {
-            File audioFile = new File(filePath);
-            if (!audioFile.exists()) {
-                System.err.println("Audio file not found: " + filePath);
-                return false;
+//            ClassLoader classLoader = getClass().getClassLoader();
+
+            URL url = getClass().getResource(audioPath);
+            if (url == null) {
+                throw new IOException("Fetching from " + "\u001B[32m" + audioPath + "\u001B[0m" + " ...");
             }
 
-            AudioInputStream audioStream = AudioSystem.getAudioInputStream(audioFile);
+            AudioInputStream ais = AudioSystem.getAudioInputStream(url);
             Clip clip = AudioSystem.getClip();
-            clip.open(audioStream);
-            audioClips.put(audioKey, clip);
-            System.out.println("Loaded audio: " + audioKey + " from " + filePath);
-            return true;
+            clip.open(ais);
+            System.out.println("Loaded audio: " + audioKey + " from " + audioPath);
+
+            if (!audioKey.equals("null!")) {
+                audioClips.put(audioKey, clip);
+                System.out.printf("Audio: %s loaded %s from %s%n","\u001B[40m" + audioKey + "\u001B[0m", "\u001B[32m" + "successfully" + "\u001B[0m" , audioPath);
+                return clip;
+            } else {
+                System.out.println("Could not load audio: " + audioKey);
+                return null;
+            }
+
         } catch (UnsupportedAudioFileException e) {
-            System.err.println("Unsupported audio file format for " + filePath + ": " + e.getMessage());
+            System.err.println("Unsupported audio file format for " + audioPath + ": " + e.getMessage());
+            return null;
         } catch (IOException e) {
-            System.err.println("Error reading audio file " + filePath + ": " + e.getMessage());
+            System.err.println("NO error reading audio file " + audioPath + " - " + e.getMessage());
+            return null;
         } catch (LineUnavailableException e) {
-            System.err.println("Audio line unavailable for " + filePath + ": " + e.getMessage());
+            System.err.println("Audio line unavailable for " + audioPath + ": " + e.getMessage());
+            return null;
         }
-        return false;
+    }
+
+    public void bulkLoadAudio() {
+        List<String> audioPaths;
+        audioPaths = ResourceFileReader.readFromFile("audioPaths.txt"); // this already ignores blank lines.
+
+        List<String> audioNames = new ArrayList<>();
+        for (String pathString : audioPaths) {
+            if (pathString != null) {
+                try {
+                    Path path = Paths.get(pathString);
+                    Path audioName = path.getFileName();
+                    if (audioName != null) {
+                        audioNames.add(audioName.toString());
+                    } else {
+                        // Handles root directories or paths ending with separator
+                        // getFileName() returns null for root (e.g., "/")
+                        // For "/path/to/directory/", it returns "directory"
+                        audioNames.add("it's root"); // handle
+                    }
+                } catch (Exception e) {
+                    // Handle potential invalid path strings if necessary
+                    System.err.println("Error processing path: " + pathString + " - " + e.getMessage());
+                    audioNames.add("failed"); // error marker
+                }
+            } else {
+                audioNames.add("null!"); // Handle null paths
+            }
+        }
+
+        for (int i = 0; i < audioNames.size(); i++) {
+            loadAudio(audioNames.get(i), audioPaths.get(i));
+        }
     }
 
     // play the audio
@@ -141,7 +194,7 @@ public class AudioManager {
         }
     }
 
-    // get current master volume
+    // get the current master volume
     public float getMasterVolume() {
         if (masterVolumeControl != null) {
             float db = masterVolumeControl.getValue();

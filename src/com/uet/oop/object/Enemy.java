@@ -28,10 +28,10 @@ public abstract class Enemy extends GameEntity {
         this.currentAnimation = null;
         this.isAlive = true;
         this.hitRect = new Rectangle(
-                0,
-                0,
-                48,
-                48
+                1,
+                1,
+                46,
+                46
         );
     }
 

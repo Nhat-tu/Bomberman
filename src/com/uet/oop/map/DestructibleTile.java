@@ -11,12 +11,10 @@ import java.util.HashMap;
 
 public class DestructibleTile extends Tile {
     protected PowerUp potentialPowerUp;
-//    public boolean isDestroyed = false;
 
     public DestructibleTile(PowerUp potentialPowerUp, GameWindow gw, TextureManager textureManager) {
         this.tileType = TileType.DESTRUCTIBLE;
         this.potentialPowerUp = potentialPowerUp;
-//        this.collideWithEntity = true;
         this.gw = gw;
         this.textureManager = textureManager;
 
@@ -30,18 +28,17 @@ public class DestructibleTile extends Tile {
 
     public void destroyed() {
         this.setAnimations("explodedBrick");
-//        this.isDestroyed = true;
 
-        if (this.potentialPowerUp.getType() == PowerUp.PowerUpType.NULL ||
-            this.getTileType() == TileType.HAS_POWERUP) {
+        if ( (this.potentialPowerUp.getType() == PowerUp.PowerUpType.NULL && this.getTileType() != TileType.PORTAL) ||
+              this.getTileType() == TileType.HAS_POWERUP) {
             this.tileType = TileType.PASSABLE;
         } else {
             this.tileType = TileType.HAS_POWERUP;
         }
+
         if (this.currentAnimation != null) {
             this.currentAnimation.resetAndStart();
         }
-        /* TODO */
     }
 
     @Override

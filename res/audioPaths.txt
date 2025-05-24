@@ -1,0 +1,8 @@
+/sounds/background_music.wav
+/sounds/collect_powerup.wav
+/sounds/explosion.wav
+/sounds/footsteps.wav
+/sounds/player_die.wav
+/sounds/kill_all_enemies.wav
+/sounds/portal.wav
+/sounds/mission_accomplished.wav

@@ -1,5 +1,7 @@
 package com.uet.oop.rendering;
 
+import com.uet.oop.core.ResourceFileReader;
+
 import java.awt.image.BufferedImage;
 import java.io.InputStream;
 import java.nio.file.Path;
@@ -43,7 +45,7 @@ public class TextureManager {
 
     public void bulkLoadTexture() {
         List<String> filePaths;
-        filePaths = TextureFileReader.readFromFile("texturePaths.txt"); // this already ignores blank lines.
+        filePaths = ResourceFileReader.readFromFile("texturePaths.txt"); // this already ignores blank lines.
 
         List<String> fileNames = new ArrayList<>();
         for (String pathString : filePaths) {
@@ -80,37 +82,6 @@ public class TextureManager {
             System.err.println("Texture requested, but not found: " + name);
         }
         return texture;
-    }
-
-    /**
-     *
-     * @param sheetName
-     * @param x is start_X of sub-image
-     * @param y is start_Y of sub-image
-     * @param width
-     * @param height
-     *
-     * @return a sub-image from the given sheet
-     */
-    public BufferedImage getSubImage(String sheetName, int x, int y, int width, int height) {
-        BufferedImage sheet = getTexture(sheetName);
-        if (sheet == null) {
-            System.err.println("Sheet: " + sheetName + " not present");
-            return null;
-        }
-
-        try {
-            if (x < 0 || y < 0 || width < 0 || height < 0
-                || x + width > sheet.getWidth() || y + height > sheet.getHeight()
-            ) {
-                System.err.println("Invalid coordinates or dimension for sheet: " + sheetName);
-                return null;
-            }
-            return sheet.getSubimage(x, y, width, height);
-        } catch (Exception e) {
-            System.out.println("Error getting sub-image from sheet: " + sheetName + ".Cause: " + e.getMessage());
-            return null;
-        }
     }
 
     public void unloadTexture(String name) {
