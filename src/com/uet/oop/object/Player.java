@@ -246,13 +246,14 @@ public class Player extends GameEntity {
             int portalMapY = newY / gw.tileSize * gw.tileSize;
 
             Rectangle portalMapRect = new Rectangle(
-                    portalMapX - 5,
-                    portalMapY - 5,
-                    hitRect.width + 10,
-                    hitRect.height + 10
+                    portalMapX + hitRect.x,
+                    portalMapY + hitRect.y,
+                    hitRect.width,
+                    hitRect.height
             );
 
-            if (portalMapRect.contains(playerMapRect) && gw.allEnemiesDead) {
+            if (portalMapRect.intersects(playerMapRect) && gw.allEnemiesDead) {
+                gw.audioManager.stopSound("background_music.wav");
                 gw.audioManager.playSound("portal.wav");
                 gw.audioManager.playSound("mission_accomplished.wav");
             }

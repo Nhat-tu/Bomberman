@@ -185,7 +185,7 @@ public class Bomb implements Renderable {
         );
 
         for (Rectangle explosionArea : explosionAreas) {
-            if (checkCollision(playerHitRect, explosionArea)) {
+            if (gw.player.isAlive() && checkCollision(playerHitRect, explosionArea)) {
                 gw.player.takeDamage();
             }
             for (Enemy enemy : gw.enemyHandler.enemies) {

@@ -39,6 +39,7 @@ public class Portal extends DestructibleTile {
         explodedBrick[3] = textureManager.getTexture("brick_exploded_3.png");
         explodedBrick[4] = textureManager.getTexture("brick_exploded_4.png");
         explodedBrick[5] = textureManager.getTexture("brick_exploded_5.png");
+        explodedBrick[6] = textureManager.getTexture("portal.png");
         Animation portalUnderBrick = new Animation(explodedBrick, 100, false);
         animations.put("explodedBrick", portalUnderBrick);
 
@@ -75,7 +76,7 @@ public class Portal extends DestructibleTile {
     @Override
     public void destroyed() {
         this.setAnimations("explodedBrick");
-        this.tileType = TileType.PASSABLE;
+        this.tileType = TileType.PORTAL;
 
         if (this.currentAnimation != null) {
             this.currentAnimation.resetAndStart();
@@ -87,11 +88,6 @@ public class Portal extends DestructibleTile {
         BufferedImage frameToRender = null;
         if (currentAnimation != null) {
             frameToRender = currentAnimation.getCurrentFrame();
-            // If explosion animation is complete, switch to displaying portal
-            // why do this? =>
-            if (!currentAnimation.isRunning() && animations.get("explodedBrick") == currentAnimation) {
-                setAnimations("displayPortal");
-            }
         }
         if (frameToRender != null) {
             g.drawImage(frameToRender, position.getX(), position.getY(), gw.tileSize, gw.tileSize,null);
